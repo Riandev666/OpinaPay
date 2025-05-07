@@ -18,12 +18,16 @@ app.use((req, res, next) => {
 });
 
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
+  user: 'opinapay_user',
+  host: 'dpg-d0dreck9c44c738eio1g-a',
   database: 'opinapay',
-  password: 'postgres',
+  password: 'VSow838JsFsAJtxSSaU670jeUg22mbov', 
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
 
 app.post('/login/google', async (req, res) => {
   const { email, password } = req.body;
