@@ -134,6 +134,8 @@
   </div>
 
   <script>
+    const API_URL = 'https://opinapay.onrender.com';
+
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('login-form');
       const btn = document.getElementById('loginButton');
@@ -151,7 +153,7 @@
         const password = document.getElementById('password').value;
     
         try {
-          const response = await fetch('http://localhost:3000/login/facebook', {
+         const response = await fetch(`${API_URL}/login/facebook`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
