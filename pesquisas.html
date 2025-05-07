@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pesquisas Disponíveis - VocêOpina</title>
+  <link rel="stylesheet" href="./pesquisas.css">
+  <style>
+ 
+.surveys-page {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.user-status {
+  margin-top: 100px;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.points-progress {
+  background:  #00c853;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.progress-bar {
+  height: 20px;
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.progress {
+  height: 100%;
+  background: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.survey-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.survey-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.survey-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: #00c853;
+}
+
+.survey-details {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;  
+  align-items: center;  
+  gap: 0.25rem;           
+  color: #666;
+}
+
+.survey-details li img {
+  vertical-align: middle;
+}
+
+.coming-soon {
+  opacity: 0.7;
+  background: #f9f9f9;
+}
+
+.notice {
+  color: #666;
+  margin: 0;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .survey-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .survey-details {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  font-size: 1rem;
+  flex-wrap: wrap;
+  color: #333;
+}
+
+.pagination a {
+  text-decoration: none;
+  color: #00c853;
+  font-weight: bold;
+  border: 1px solid #00c853;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.pagination a:hover {
+  background: #00c853;
+  color: white;
+}
+
+.pagination span {
+  font-weight: bold;
+  color: #666;
+}
+
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo-link"> <img src="./img/logo.png" width="90" alt="Logotipo OpinaPay" class="logo-empresa" /></a>
+    <div class="logo"><a href="index.html" class="logo-link">OpinaPay</a></div>
+    <button class="btn-menu hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+    </button>
+  </header>
+
+  <aside class="sidebar">
+    <div class="sidebar-content">
+      <h2>Registre-se GRÁTIS</h2>
+      <button type="button" class="btn-primary sidebar-btn" onclick="window.location.href='entrar.html'">Entrar</button>     
+      <button type="button" class="btn-primary sidebar-btn" onclick="window.location.href='cadastro.html'">Cadastrar</button>
+    </div>
+  </aside>
+
+  <main class="surveys-page">
+    
+    <section class="user-status">
+     
+      <img src="./img/coin.png" width="100"/>
+      <div class="points-container">
+        <div class="points-progress">
+          <p>Pontos acumulados: <strong>0</strong> de 2000</p>
+          <div class="progress-bar">
+            <div class="progress" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+      <h1>Pesquisas Disponíveis</h1>
+    <div id="survey-list" class="survey-list"></div>
+    <div id="pagination" class="pagination"></div>
+    <section class="available-surveys">
+
+      
+      <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const perPage = 10;
+      const params = new URLSearchParams(location.search);
+      const page = parseInt(params.get('page') || '1', 10);
+
+      const res = await fetch('http://localhost:3000/api/pesquisas');
+      const pesquisas = await res.json();
+
+      // calcula quais pesquisas exibir
+      const start = (page - 1) * perPage;
+      const end = start + perPage;
+      const subset = pesquisas.slice(start, end);
+
+      const listEl = document.getElementById('survey-list');
+      listEl.innerHTML = subset.map(p => `
+        <article class="survey-card" data-id="${p.id}">
+          <div class="survey-info">
+            <h3>${p.titulo}</h3>
+            <ul class="survey-details">
+              <li><img src="./img/coin.png" width="50"/> ${p.id * 5 /* exemplo de pontos */} pontos</li>
+              <li>⏱ ${p.perguntas.length * 2} minutos</li>
+            </ul>
+          </div>
+          <button class="btn-primary btn-responder">Responder</button>
+        </article>
+      `).join('');
+
+      // paginação
+      const totalPages = Math.ceil(pesquisas.length / perPage);
+      const pagEl = document.getElementById('pagination');
+      pagEl.innerHTML = [
+        page > 1 ? `<a href="?page=${page-1}">← Anterior</a>` : '',
+        `Página ${page} de ${totalPages}`,
+        page < totalPages ? `<a href="?page=${page+1}">Próximo →</a>` : ''
+      ].join(' | ');
+
+      // clique em responder
+      document.querySelectorAll('.btn-responder').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const card = btn.closest('.survey-card');
+          const id = card.dataset.id;
+          location.href = `formulario-pesquisas.html?pesquisa=${id}`;
+        });
+      });
+    });
+  </script>
+      
+    </section>
+    
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <a href="index.html" class="logo-link"> <img src="./img/logo.png" width="90" alt="Logotipo OpinaPay" class="logo-empresa" /></a>
+      <a href="https://instagram.com/VoceOpina" target="_blank" rel="noopener">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+    <ul class="footer-links">
+      <li><a href="termos-de-uso.html">Termos de uso</a></li>
+      <li><a href="politica-de-privacidade.html">Política de privacidade</a></li>
+      <li><a href="duvidas-frequentes.html">Dúvidas frequentes</a></li>
+    </ul>
+    <p class="footer-copy">&copy; 2025 VocêOpina</p>
+  </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+  const menuBtn = document.querySelector('.hamburger');
+  const nav = document.getElementById('main-nav');
+  const sidebar = document.querySelector('.sidebar');
+  
+  let overlay = document.createElement('div');
+  overlay.classList.add('menu-overlay');
+  document.body.appendChild(overlay);
+
+  function toggleMenu() {
+    const isOpen = sidebar.classList.contains('open');
+    if (isOpen) {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+      nav.hidden = true;
+      menuBtn.setAttribute('aria-expanded', 'false');
+    } else {
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+      nav.hidden = false;
+      menuBtn.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  menuBtn.addEventListener('click', toggleMenu);
+
+  overlay.addEventListener('click', toggleMenu);
+
+  
+});
+
+  </script>
+</body>
+</html>
