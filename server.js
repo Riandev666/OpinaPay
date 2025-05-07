@@ -9,14 +9,28 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+  'https://opinapaybrasil.netlify.app',
+  'https://www.opinapaybrasil.netlify.app'
+];
+
 app.use(cors({
-  origin: [
-    'https://opinapaybrasil.netlify.app',
-    'https://www.opinapaybrasil.netlify.app'
-  ]
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origem não permitida pelo CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
 
+// resposta explícita para preflight
 app.options('*', cors());
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
