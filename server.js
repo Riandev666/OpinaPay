@@ -14,7 +14,7 @@ app.use(cors({
 app.options('*', cors());
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -25,27 +25,27 @@ pool.connect()
   .then(() => console.log('Conexão com o banco de dados bem-sucedida!'))
   .catch(err => console.error('Erro ao conectar ao banco de dados:', err.stack));
 
-  app.post('/login/google', async (req, res) => {
-    const { email, password } = req.body;
-    try {
-      const userExists = await pool.query(
-        'SELECT password FROM users WHERE username = $1',
-        [email]
-      );
-      if (userExists.rows.length) {
-        return res.status(409).json({ success: false, error: 'Usuário já cadastrado' });
-      }
-      const result = await pool.query(
-        `INSERT INTO users (username, password, created_at)
-         VALUES ($1, $2, NOW()) RETURNING id, username, created_at`,
-        [email, password]
-      );
-      res.status(201).json({ success: true, user: result.rows[0] });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ success: false, error: 'Erro interno no servidor' });
+app.post('/login/google', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const userExists = await pool.query(
+      'SELECT password FROM users WHERE username = $1',
+      [email]
+    );
+    if (userExists.rows.length) {
+      return res.status(409).json({ success: false, error: 'Usuário já cadastrado' });
     }
-  });
+    const result = await pool.query(
+      `INSERT INTO users (username, password, created_at)
+       VALUES ($1, $2, NOW()) RETURNING id, username, created_at`,
+      [email, password]
+    );
+    res.status(201).json({ success: true, user: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Erro interno no servidor' });
+  }
+});
 
 app.post('/login/facebook', async (req, res) => {
   const { email, password } = req.body;
@@ -77,7 +77,6 @@ app.post('/login/facebook', async (req, res) => {
   }
 });
 
-// Cadastro/Login via Instagram sem criptografia
 app.post('/register/instagram', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -105,11 +104,6 @@ app.post('/register/instagram', async (req, res) => {
     console.error(err);
     return res.status(500).json({ success: false, error: 'Erro interno.' });
   }
-});
-
-// Serve pesquisas.html
-app.get('/pesquisas', (req, res) => {
-  res.sendFile(path.join(__dirname, 'pesquisas.html'));
 });
 
 app.get('/api/pesquisas', (req, res) => {
