@@ -110,7 +110,9 @@
   </div>
 
   <script>
-   const API_URL = location.origin; //rgehehe
+   // ✅ domínio do seu backend no Render
+const API_URL = 'https://opinapay.onrender.com';
+
 
     async function login() {
       const email = document.getElementById('email').value.trim();
@@ -118,10 +120,11 @@
 
       try {
         const response = await fetch(`${API_URL}/login/google`, {
-           method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ email, password })
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email, password })
 });
+
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Falha no login');
         window.location.href = 'pesquisas.html';
