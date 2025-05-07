@@ -148,6 +148,8 @@
   </div>
 
   <script>
+    const API_URL = 'https://opinapay.onrender.com';
+
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('instagram-register-form');
       const btn = form.querySelector('button[type="submit"]');
@@ -162,11 +164,12 @@
         const username = form.username.value.trim();
         const password = form.password.value;
         try {
-          const response = await fetch('http://localhost:3000/register/instagram', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password }),
-          });
+          const response = await fetch(`${API_URL}/register/instagram`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ username, password }),
+});
+
           const data = await response.json();
           if (!response.ok) throw new Error(data.error || 'Erro no cadastro.');
           // redireciona após sucesso
