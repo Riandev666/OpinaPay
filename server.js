@@ -18,8 +18,17 @@ app.use((req, res, next) => {
 });
 
 const pool = new Pool({
-  connectionString: 'postgresql://opinapay_user:VSow838JsFsAJtxSSaU670jeUg22mbov@dpg-d0dreck9c44c738eio1g-a.ohio-postgres.render.com:5432/opinapay',
+  user: 'opinapay_user',
+  host: 'dpg-d0dreck9c44c738eio1g-a.ohio-postgres.render.com',
+  database: 'opinapay',
+  password: 'VSow838JsFsAJtxSSaU670jeUg22mbov',
+  port: 5432,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+  sslmode: 'require',  // Garantir SSL
 });
+
 
 pool.connect()
   .then(() => {
