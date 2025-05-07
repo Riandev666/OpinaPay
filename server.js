@@ -28,8 +28,6 @@ app.use(cors({
   optionsSuccessStatus: 200
 }));
 
-// resposta explícita para preflight
-app.options('/*', cors());
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
