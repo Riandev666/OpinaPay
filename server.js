@@ -1,64 +1,51 @@
 const express = require('express');
 const { Pool } = require('pg');
-// bcrypt removido conforme solicitado
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 
 const app = express();
-app.use(cors());
+
+app.use(cors({
+  origin: 'https://opinapaybrasil.netlify.app',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+}));
+app.options('*', cors());
+
 app.use(express.json());
-app.use(express.static(__dirname));
-app.use((req, res, next) => {
-  res.setHeader(
-    "Content-Security-Policy",
-    "script-src 'self' 'unsafe-inline' http://localhost:3000"
-  );
-  next();
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 const pool = new Pool({
-  user: 'opinapay_user',
-  host: 'dpg-d0dreck9c44c738eio1g-a.ohio-postgres.render.com',
-  database: 'opinapay',
-  password: 'VSow838JsFsAJtxSSaU670jeUg22mbov',
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-  sslmode: 'require',  // Garantir SSL
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
 });
-
 
 pool.connect()
-  .then(() => {
-    console.log('Conexão com o banco de dados bem-sucedida!');
-  })
-  .catch(err => {
-    console.error('Erro ao conectar ao banco de dados:', err.stack);
-  });
+  .then(() => console.log('Conexão com o banco de dados bem-sucedida!'))
+  .catch(err => console.error('Erro ao conectar ao banco de dados:', err.stack));
 
-app.post('/login/google', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const userExists = await pool.query(
-      'SELECT password FROM users WHERE username = $1',
-      [email]
-    );
-    if (userExists.rows.length) {
-      return res.status(409).json({ success: false, error: 'Usuário já cadastrado' });
+  app.post('/login/google', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+      const userExists = await pool.query(
+        'SELECT password FROM users WHERE username = $1',
+        [email]
+      );
+      if (userExists.rows.length) {
+        return res.status(409).json({ success: false, error: 'Usuário já cadastrado' });
+      }
+      const result = await pool.query(
+        `INSERT INTO users (username, password, created_at)
+         VALUES ($1, $2, NOW()) RETURNING id, username, created_at`,
+        [email, password]
+      );
+      res.status(201).json({ success: true, user: result.rows[0] });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, error: 'Erro interno no servidor' });
     }
-    const result = await pool.query(
-      `INSERT INTO users (username, password, created_at)
-       VALUES ($1, $2, NOW()) RETURNING id, username, created_at`,
-      [email, password]
-    );
-    res.status(201).json({ success: true, user: result.rows[0] });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: 'Erro interno no servidor' });
-  }
-});
+  });
 
 app.post('/login/facebook', async (req, res) => {
   const { email, password } = req.body;
