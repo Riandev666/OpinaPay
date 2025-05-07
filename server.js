@@ -18,16 +18,16 @@ app.use((req, res, next) => {
 });
 
 const pool = new Pool({
-  user: 'opinapay_user',
-  host: 'dpg-d0dreck9c44c738eio1g-a',
-  database: 'opinapay',
-  password: 'VSow838JsFsAJtxSSaU670jeUg22mbov', 
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  connectionString: 'postgresql://opinapay_user:VSow838JsFsAJtxSSaU670jeUg22mbov@dpg-d0dreck9c44c738eio1g-a.ohio-postgres.render.com:5432/opinapay',
 });
 
+pool.connect()
+  .then(() => {
+    console.log('Conexão com o banco de dados bem-sucedida!');
+  })
+  .catch(err => {
+    console.error('Erro ao conectar ao banco de dados:', err.stack);
+  });
 
 app.post('/login/google', async (req, res) => {
   const { email, password } = req.body;
