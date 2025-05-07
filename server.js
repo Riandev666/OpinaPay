@@ -1,17 +1,18 @@
 const express = require('express');
-const { Pool } = require('pg');
 const cors = require('cors');
+const { Pool } = require('pg');
 const path = require('path');
 const fs = require('fs');
 
 const app = express();
 
 app.use(cors({
-  origin: 'https://opinapaybrasil.netlify.app',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type'],
+  origin: ['https://opinapaybrasil.netlify.app', 'https://www.opinapaybrasil.netlify.app'],
+  methods: ['GET','POST','OPTIONS'],
+  allowedHeaders: ['Content-Type']
 }));
 app.options('*', cors());
+
 
 app.use(express.json());
 app.use(express.static(__dirname));
