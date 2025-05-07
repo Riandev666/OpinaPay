@@ -3,55 +3,55 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const app = express();
 
-const FRONTEND_URLS = [
-  'https://opinapaybrasil.netlify.app',
-  'https://www.opinapaybrasil.netlify.app'
-];
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true);
-    if (FRONTEND_URLS.indexOf(origin) === -1) {
-      const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  methods: ['GET','POST','OPTIONS'],
-  allowedHeaders: ['Content-Type']
+  origin: [
+    'https://opinapaybrasil.netlify.app',
+    'https://www.opinapaybrasil.netlify.app'
+  ]
 }));
-app.options('*', cors());
 
+app.options('*', cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 pool.connect()
-  .then(() => console.log('Conexão com o banco de dados bem-sucedida!'))
-  .catch(err => console.error('Erro ao conectar ao banco de dados:', err.stack));
+  .then(() => console.log('DB conectado com sucesso'))
+  .catch(err => console.error('Erro DB:', err));
 
-  app.post('/login/google', async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ success: false, error: 'E‑mail e senha são obrigatórios.' });
-    try {
-      const exists = await pool.query('SELECT password FROM users WHERE username = $1', [email]);
-      if (exists.rows.length) return res.status(409).json({ success: false, error: 'Usuário já cadastrado' });
-      const result = await pool.query(
-        `INSERT INTO users (username, password, created_at) VALUES ($1, $2, NOW()) RETURNING id, username, created_at`,
-        [email, password]
-      );
-      return res.status(201).json({ success: true, user: result.rows[0] });
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ success: false, error: 'Erro interno no servidor' });
+app.post('/login/google', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ success: false, error: 'E‑mail e senha são obrigatórios.' });
+  }
+
+  try {
+    const exists = await pool.query('SELECT password FROM users WHERE username = $1', [email]);
+    if (exists.rows.length) {
+      return res.status(409).json({ success: false, error: 'Usuário já cadastrado' });
     }
-  });
+
+    const result = await pool.query(
+      'INSERT INTO users (username, password, created_at) VALUES ($1, $2, NOW()) RETURNING id, username, created_at',
+      [email, password]
+    );
+
+    res.status(201).json({ success: true, user: result.rows[0] });
+  } catch (err) {
+    console.error('Erro /login/google:', err);
+    res.status(500).json({ success: false, error: 'Erro interno no servidor' });
+  }
+});
   
 
   app.post('/login/facebook', async (req, res) => {
@@ -97,10 +97,14 @@ pool.connect()
   app.get('/api/pesquisas', (req, res) => {
     const filePath = path.join(__dirname, 'data', 'pesquisas.json');
     fs.readFile(filePath, 'utf8', (err, data) => {
-      if (err) return res.status(500).json({ erro: 'Erro ao ler o arquivo de pesquisas' });
-      res.json(JSON.parse(data));
+      if (err) return res.status(500).json({ erro: 'Erro ao ler pesquisas' });
+      try {
+        res.json(JSON.parse(data));
+      } catch (parseErr) {
+        res.status(500).json({ erro: 'Erro ao parsear JSON de pesquisas' });
+      }
     });
   });
-
+  
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));
+  app.listen(PORT, () => console.log(`Server rodando na porta ${PORT}`));

