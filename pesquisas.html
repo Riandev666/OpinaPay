@@ -172,15 +172,15 @@
 
       
       <script>
+        const API_URL = 'https://opinapay.onrender.com';
+
     document.addEventListener('DOMContentLoaded', async () => {
       const perPage = 10;
       const params = new URLSearchParams(location.search);
       const page = parseInt(params.get('page') || '1', 10);
-
-      const res = await fetch('http://localhost:3000/api/pesquisas');
+      const res       = await fetch(`${API_URL}/api/pesquisas`);
       const pesquisas = await res.json();
 
-      // calcula quais pesquisas exibir
       const start = (page - 1) * perPage;
       const end = start + perPage;
       const subset = pesquisas.slice(start, end);
@@ -199,7 +199,6 @@
         </article>
       `).join('');
 
-      // paginação
       const totalPages = Math.ceil(pesquisas.length / perPage);
       const pagEl = document.getElementById('pagination');
       pagEl.innerHTML = [
@@ -208,7 +207,6 @@
         page < totalPages ? `<a href="?page=${page+1}">Próximo →</a>` : ''
       ].join(' | ');
 
-      // clique em responder
       document.querySelectorAll('.btn-responder').forEach(btn => {
         btn.addEventListener('click', () => {
           const card = btn.closest('.survey-card');

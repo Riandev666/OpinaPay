@@ -81,6 +81,8 @@
     </div>
   
     <script>
+      const API_URL = 'https://opinapay.onrender.com';
+
       function getParam(name) {
         return new URLSearchParams(window.location.search).get(name);
       }
@@ -92,7 +94,7 @@
           return;
         }
     
-        const res = await fetch('http://localhost:3000/api/pesquisas');
+        const res       = await fetch(`${API_URL}/api/pesquisas`);
         const pesquisas = await res.json();
         const pesquisa = pesquisas.find(p => p.id === id);
     
