@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesquisa - Hábitos de Sono</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 2rem 1rem;
+        background-color: #f7f7f7;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #00c853;
+      }
+      form {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+      input[type="text"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      button {
+        background-color: #00c853;
+        color: white;
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-right: 1rem;
+      }
+      button:hover {
+        background-color: #009e40;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pesquisa: Hábitos de Sono</h1>
+    <form id="survey-form">
+      <div id="questions-container">
+        <!-- Seção 1: Perfil -->
+        <div class="form-group">
+          <label>1. Qual sua idade?</label>
+          <input type="text" name="idade" />
+        </div>
+        <div class="form-group">
+          <label>2. Qual seu gênero?</label>
+          <div class="options">
+            <label><input type="radio" name="genero" value="Masculino" /> Masculino</label>
+            <label><input type="radio" name="genero" value="Feminino" /> Feminino</label>
+            <label><input type="radio" name="genero" value="Outro" /> Outro</label>
+            <label><input type="radio" name="genero" value="Prefiro não dizer" /> Prefiro não dizer</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>3. Você trabalha ou estuda?</label>
+          <select name="ocupacao">
+            <option>Trabalho</option>
+            <option>Estudo</option>
+            <option>Ambos</option>
+            <option>Nenhum</option>
+          </select>
+        </div>
+        <!-- Seção 2: Hábitos de Sono -->
+        <div class="form-group">
+          <label>4. Quantas horas você dorme por noite, em média?</label>
+          <select name="horas_noite">
+            <option>Menos de 4h</option>
+            <option>4-6h</option>
+            <option>6-8h</option>
+            <option>8-10h</option>
+            <option>Mais de 10h</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>5. A que horas você costuma ir para a cama?</label>
+          <input type="text" name="hora_dormir" placeholder="ex: 23:00" />
+        </div>
+        <div class="form-group">
+          <label>6. A que horas costuma acordar?</label>
+          <input type="text" name="hora_acordar" placeholder="ex: 07:00" />
+        </div>
+        <div class="form-group">
+          <label>7. Você sente que tem um sono de qualidade?</label>
+          <div class="options">
+            <label><input type="radio" name="qualidade_sono" value="Sim" /> Sim</label>
+            <label><input type="radio" name="qualidade_sono" value="Não" /> Não</label>
+            <label><input type="radio" name="qualidade_sono" value="Às vezes" /> Às vezes</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>8. Você faz cochilos (sonecas) durante o dia?</label>
+          <select name="cochilos">
+            <option>Sim, diariamente</option>
+            <option>Às vezes</option>
+            <option>Nunca</option>
+          </select>
+        </div>
+        <!-- Seção 3: Ambiente e Hábitos Pré-Sono -->
+        <div class="form-group">
+          <label>9. Você usa o celular antes de dormir?</label>
+          <select name="celular_noite">
+            <option>Sim, sempre</option>
+            <option>Às vezes</option>
+            <option>Nunca</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>10. Você consome bebidas com cafeína perto da hora de dormir?</label>
+          <select name="cafeina">
+            <option>Sim</option>
+            <option>Não</option>
+            <option>Às vezes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>11. Como você classificaria o ambiente do seu quarto?</label>
+          <textarea name="ambiente" rows="2" placeholder="luz, barulho, temperatura..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>12. Você pratica atividade física próximo ao horário de dormir?</label>
+          <select name="exercicio_noite">
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+        </div>
+        <!-- Seção 4: Qualidade e Problemas -->
+        <div class="form-group">
+          <label>13. Com que frequência você acorda durante a noite?</label>
+          <select name="acordar_noite">
+            <option>Frequentemente</option>
+            <option>Ocasionalmente</option>
+            <option>Nunca</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>14. Você ronca ou tem apneia do sono (diagnosticada)?</label>
+          <select name="ronco_apneia">
+            <option>Sim</option>
+            <option>Não</option>
+            <option>Não sei</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>15. Em uma escala de 0 a 10, como você avalia seu nível de sonolência diurna?</label>
+          <input type="text" name="sonolencia" placeholder="0 (nada) - 10 (muito)" />
+        </div>
+        <!-- Seção 5: Impacto no Dia a Dia -->
+        <div class="form-group">
+          <label>16. Você tem dificuldade de concentração devido ao sono?</label>
+          <select name="concentracao">
+            <option>Sim</option>
+            <option>Não</option>
+            <option>Às vezes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>17. Como você se sente ao acordar?</label>
+          <div class="options">
+            <label><input type="radio" name="sentir_ao_acordar" value="Descansado" /> Descansado</label>
+            <label><input type="radio" name="sentir_ao_acordar" value="Cansado" /> Cansado</label>
+            <label><input type="radio" name="sentir_ao_acordar" value="Irritado" /> Irritado</label>
+            <label><input type="radio" name="sentir_ao_acordar" value="Neutro" /> Neutro</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>18. Seu sono afeta seu humor durante o dia?</label>
+          <textarea name="impacto_humor" rows="2"></textarea>
+        </div>
+        <!-- Seção 6: Reflexão -->
+        <div class="form-group">
+          <label>19. Já tentou alguma técnica para melhorar o sono? Qual?</label>
+          <textarea name="tecnicas" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>20. O que você mudaria na sua rotina para dormir melhor?</label>
+          <textarea name="mudanca_rotina" rows="2"></textarea>
+        </div>
+      </div>
+      <button type="button" id="prevBtn" style="display: none">Anterior</button>
+      <button type="button" id="nextBtn">Próximo</button>
+      <button type="submit" id="submitBtn" style="display: none">Enviar</button>
+    </form>
+    <script>
+      const porPagina = 10;
+      let paginaAtual = 0;
+      const perguntas = Array.from(
+        document.querySelectorAll("#questions-container .form-group")
+      );
+      function showPage(page) {
+        const inicio = page * porPagina;
+        const fim = inicio + porPagina;
+        perguntas.forEach(
+          (q, i) => (q.style.display = i >= inicio && i < fim ? "" : "none")
+        );
+        document.getElementById("prevBtn").style.display = page ? "" : "none";
+        const isLast = page >= Math.ceil(perguntas.length / porPagina) - 1;
+        document.getElementById("nextBtn").style.display = isLast ? "none" : "";
+        document.getElementById("submitBtn").style.display = isLast ? "" : "none";
+      }
+      document.getElementById("nextBtn").addEventListener("click", () => {
+        paginaAtual++;
+        showPage(paginaAtual);
+      });
+      document.getElementById("prevBtn").addEventListener("click", () => {
+        paginaAtual--;
+        showPage(paginaAtual);
+      });
+      showPage(0);
+    </script>
+  </body>
+</html>

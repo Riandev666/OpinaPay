@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "titulo": "Pesquisa sobre Alimentação 1",
+    "titulo": "Pesquisa de Preferência de Filmes e Séries",
     "perguntas": [
       "Carne",
       "Frutas",
@@ -12,7 +12,7 @@
   },
   {
     "id": 2,
-    "titulo": "Pesquisa sobre Saúde 2",
+    "titulo": "Pesquisa sobre Saúde",
     "perguntas": [
       "Plano de saúde",
       "Check-up anual",
@@ -23,18 +23,11 @@
   },
   {
     "id": 3,
-    "titulo": "Pesquisa sobre Lazer 3",
-    "perguntas": [
-      "Viagens",
-      "Parques",
-      "Shows",
-      "Cinema",
-      "Jogos"
-    ]
+    "titulo": "Pesquisa sobre Redes Sociais"
   },
   {
     "id": 4,
-    "titulo": "Pesquisa sobre Alimentação 4",
+    "titulo": " Pesquisa de Hábitos de Sono",
     "perguntas": [
       "Doces",
       "Carne",
@@ -45,7 +38,7 @@
   },
   {
     "id": 5,
-    "titulo": "Pesquisa sobre Tecnologia 5",
+    "titulo": "Pesquisa de Sustentabilidade no Dia a Dia",
     "perguntas": [
       "Computador",
       "Internet",
@@ -56,7 +49,7 @@
   },
   {
     "id": 6,
-    "titulo": "Pesquisa sobre Saúde 6",
+    "titulo": "Pesquisa sobre Saúde",
     "perguntas": [
       "Sono adequado",
       "Check-up anual",
@@ -67,7 +60,7 @@
   },
   {
     "id": 7,
-    "titulo": "Pesquisa sobre Transporte 7",
+    "titulo": "Pesquisa sobre Transporte",
     "perguntas": [
       "Bicicleta",
       "Ônibus",
@@ -78,7 +71,7 @@
   },
   {
     "id": 8,
-    "titulo": "Pesquisa sobre Educação 8",
+    "titulo": "Pesquisa sobre Educação",
     "perguntas": [
       "Cursos Online",
       "Ensino Superior",
@@ -89,7 +82,7 @@
   },
   {
     "id": 9,
-    "titulo": "Pesquisa sobre Meio Ambiente 9",
+    "titulo": "Pesquisa sobre Meio Ambiente",
     "perguntas": [
       "Carona solidária",
       "Reciclagem",
@@ -100,7 +93,7 @@
   },
   {
     "id": 10,
-    "titulo": "Pesquisa sobre Lazer 10",
+    "titulo": "Pesquisa sobre Lazer",
     "perguntas": [
       "Shows",
       "Jogos",
@@ -111,7 +104,7 @@
   },
   {
     "id": 11,
-    "titulo": "Pesquisa sobre Meio Ambiente 11",
+    "titulo": "Pesquisa sobre Meio Ambiente",
     "perguntas": [
       "Energia solar",
       "Economia de água",
@@ -122,7 +115,7 @@
   },
   {
     "id": 12,
-    "titulo": "Pesquisa sobre Casa 12",
+    "titulo": "Pesquisa sobre Casa",
     "perguntas": [
       "Geladeira",
       "Freezer",
@@ -133,7 +126,7 @@
   },
   {
     "id": 13,
-    "titulo": "Pesquisa sobre Transporte 13",
+    "titulo": "Pesquisa sobre Transporte",
     "perguntas": [
       "Metrô",
       "Uber",
@@ -144,7 +137,7 @@
   },
   {
     "id": 14,
-    "titulo": "Pesquisa sobre Tecnologia 14",
+    "titulo": "Pesquisa sobre Tecnologia",
     "perguntas": [
       "Tablet",
       "Impressora",
@@ -155,7 +148,7 @@
   },
   {
     "id": 15,
-    "titulo": "Pesquisa sobre Saúde 15",
+    "titulo": "Pesquisa sobre Saúde",
     "perguntas": [
       "Sono adequado",
       "Check-up anual",
@@ -166,7 +159,7 @@
   },
   {
     "id": 16,
-    "titulo": "Pesquisa sobre Lazer 16",
+    "titulo": "Pesquisa sobre Lazer",
     "perguntas": [
       "Viagens",
       "Shows",
@@ -177,7 +170,7 @@
   },
   {
     "id": 17,
-    "titulo": "Pesquisa sobre Lazer 17",
+    "titulo": "Pesquisa sobre Lazer",
     "perguntas": [
       "Jogos",
       "Viagens",
@@ -188,7 +181,7 @@
   },
   {
     "id": 18,
-    "titulo": "Pesquisa sobre Casa 18",
+    "titulo": "Pesquisa sobre Casa",
     "perguntas": [
       "Fogão",
       "Geladeira",
@@ -199,7 +192,7 @@
   },
   {
     "id": 19,
-    "titulo": "Pesquisa sobre Educação 19",
+    "titulo": "Pesquisa sobre Educação",
     "perguntas": [
       "Livros",
       "Cursos Online",
@@ -210,7 +203,7 @@
   },
   {
     "id": 20,
-    "titulo": "Pesquisa sobre Casa 20",
+    "titulo": "Pesquisa sobre Casa",
     "perguntas": [
       "Micro-ondas",
       "Máquina de lavar",
@@ -221,7 +214,7 @@
   },
   {
     "id": 21,
-    "titulo": "Pesquisa sobre Lazer 21",
+    "titulo": "Pesquisa sobre Lazer",
     "perguntas": [
       "Shows",
       "Jogos",
@@ -232,7 +225,7 @@
   },
   {
     "id": 22,
-    "titulo": "Pesquisa sobre Lazer 22",
+    "titulo": "Pesquisa sobre Lazer",
     "perguntas": [
       "Jogos",
       "Viagens",
@@ -243,7 +236,7 @@
   },
   {
     "id": 23,
-    "titulo": "Pesquisa sobre Alimentação 23",
+    "titulo": "Pesquisa sobre Alimentação",
     "perguntas": [
       "Frutas",
       "Fast-food",
@@ -254,7 +247,7 @@
   },
   {
     "id": 24,
-    "titulo": "Pesquisa sobre Lazer 24",
+    "titulo": "Pesquisa sobre Lazer",
     "perguntas": [
       "Jogos",
       "Viagens",
@@ -265,7 +258,7 @@
   },
   {
     "id": 25,
-    "titulo": "Pesquisa sobre Serviços 25",
+    "titulo": "Pesquisa sobre Serviços",
     "perguntas": [
       "TV a cabo",
       "Telefone fixo",
@@ -276,7 +269,7 @@
   },
   {
     "id": 26,
-    "titulo": "Pesquisa sobre Alimentação 26",
+    "titulo": "Pesquisa sobre Alimentação",
     "perguntas": [
       "Carne",
       "Doces",
@@ -287,7 +280,7 @@
   },
   {
     "id": 27,
-    "titulo": "Pesquisa sobre Lazer 27",
+    "titulo": "Pesquisa sobre Lazer",
     "perguntas": [
       "Cinema",
       "Shows",
@@ -298,7 +291,7 @@
   },
   {
     "id": 28,
-    "titulo": "Pesquisa sobre Meio Ambiente 28",
+    "titulo": "Pesquisa sobre Meio Ambiente",
     "perguntas": [
       "Economia de água",
       "Plantar árvores",
@@ -309,7 +302,7 @@
   },
   {
     "id": 29,
-    "titulo": "Pesquisa sobre Saúde 29",
+    "titulo": "Pesquisa sobre Saúde",
     "perguntas": [
       "Alimentação saudável",
       "Academia",
@@ -320,7 +313,7 @@
   },
   {
     "id": 30,
-    "titulo": "Pesquisa sobre Educação 30",
+    "titulo": "Pesquisa sobre Educação",
     "perguntas": [
       "Ensino Superior",
       "Livros",
@@ -331,7 +324,7 @@
   },
   {
     "id": 31,
-    "titulo": "Pesquisa sobre Finanças 31",
+    "titulo": "Pesquisa sobre Finanças",
     "perguntas": [
       "Cartão de crédito",
       "Empréstimos",
@@ -342,7 +335,7 @@
   },
   {
     "id": 32,
-    "titulo": "Pesquisa sobre Alimentação 32",
+    "titulo": "Pesquisa sobre Alimentação",
     "perguntas": [
       "Doces",
       "Fast-food",
@@ -353,7 +346,7 @@
   },
   {
     "id": 33,
-    "titulo": "Pesquisa sobre Serviços 33",
+    "titulo": "Pesquisa sobre Serviços",
     "perguntas": [
       "Streaming",
       "TV a cabo",
@@ -364,7 +357,7 @@
   },
   {
     "id": 34,
-    "titulo": "Pesquisa sobre Finanças 34",
+    "titulo": "Pesquisa sobre Finanças",
     "perguntas": [
       "Investimentos",
       "Cartão de crédito",
@@ -375,7 +368,7 @@
   },
   {
     "id": 35,
-    "titulo": "Pesquisa sobre Meio Ambiente 35",
+    "titulo": "Pesquisa sobre Meio Ambiente",
     "perguntas": [
       "Energia solar",
       "Reciclagem",
@@ -386,7 +379,7 @@
   },
   {
     "id": 36,
-    "titulo": "Pesquisa sobre Finanças 36",
+    "titulo": "Pesquisa sobre Finanças",
     "perguntas": [
       "Empréstimos",
       "Cartão de crédito",
@@ -397,7 +390,7 @@
   },
   {
     "id": 37,
-    "titulo": "Pesquisa sobre Meio Ambiente 37",
+    "titulo": "Pesquisa sobre Meio Ambiente",
     "perguntas": [
       "Energia solar",
       "Reciclagem",
@@ -408,7 +401,7 @@
   },
   {
     "id": 38,
-    "titulo": "Pesquisa sobre Lazer 38",
+    "titulo": "Pesquisa sobre Lazer",
     "perguntas": [
       "Parques",
       "Viagens",
@@ -419,7 +412,7 @@
   },
   {
     "id": 39,
-    "titulo": "Pesquisa sobre Serviços 39",
+    "titulo": "Pesquisa sobre Serviços",
     "perguntas": [
       "TV a cabo",
       "Streaming",
@@ -430,7 +423,7 @@
   },
   {
     "id": 40,
-    "titulo": "Pesquisa sobre Saúde 40",
+    "titulo": "Pesquisa sobre Saúde",
     "perguntas": [
       "Academia",
       "Plano de saúde",
@@ -441,7 +434,7 @@
   },
   {
     "id": 41,
-    "titulo": "Pesquisa sobre Educação 41",
+    "titulo": "Pesquisa sobre Educação",
     "perguntas": [
       "Ensino Superior",
       "Idiomas",
@@ -452,7 +445,7 @@
   },
   {
     "id": 42,
-    "titulo": "Pesquisa sobre Lazer 42",
+    "titulo": "Pesquisa sobre Lazer",
     "perguntas": [
       "Viagens",
       "Parques",
@@ -463,7 +456,7 @@
   },
   {
     "id": 43,
-    "titulo": "Pesquisa sobre Finanças 43",
+    "titulo": "Pesquisa sobre Finanças",
     "perguntas": [
       "Investimentos",
       "Conta bancária",
@@ -474,7 +467,7 @@
   },
   {
     "id": 44,
-    "titulo": "Pesquisa sobre Casa 44",
+    "titulo": "Pesquisa sobre Casa",
     "perguntas": [
       "Freezer",
       "Geladeira",
@@ -485,7 +478,7 @@
   },
   {
     "id": 45,
-    "titulo": "Pesquisa sobre Educação 45",
+    "titulo": "Pesquisa sobre Educação",
     "perguntas": [
       "Ensino Médio",
       "Livros",
@@ -496,7 +489,7 @@
   },
   {
     "id": 46,
-    "titulo": "Pesquisa sobre Educação 46",
+    "titulo": "Pesquisa sobre Educação",
     "perguntas": [
       "Livros",
       "Idiomas",
@@ -507,7 +500,7 @@
   },
   {
     "id": 47,
-    "titulo": "Pesquisa sobre Educação 47",
+    "titulo": "Pesquisa sobre Educação",
     "perguntas": [
       "Ensino Superior",
       "Cursos Online",
@@ -518,7 +511,7 @@
   },
   {
     "id": 48,
-    "titulo": "Pesquisa sobre Casa 48",
+    "titulo": "Pesquisa sobre Casa",
     "perguntas": [
       "Geladeira",
       "Máquina de lavar",
@@ -529,7 +522,7 @@
   },
   {
     "id": 49,
-    "titulo": "Pesquisa sobre Transporte 49",
+    "titulo": "Pesquisa sobre Transporte",
     "perguntas": [
       "Ônibus",
       "Uber",
@@ -540,7 +533,7 @@
   },
   {
     "id": 50,
-    "titulo": "Pesquisa sobre Educação 50",
+    "titulo": "Pesquisa sobre Educação",
     "perguntas": [
       "Livros",
       "Idiomas",

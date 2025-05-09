@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesquisa - Estilo Musical Favorito</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 2rem 1rem;
+        background-color: #f7f7f7;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #00c853;
+      }
+      form {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+      input[type="text"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      button {
+        background-color: #00c853;
+        color: white;
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-right: 1rem;
+      }
+      button:hover {
+        background-color: #009e40;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pesquisa: Estilo Musical Favorito</h1>
+    <form id="survey-form">
+      <div id="questions-container">
+        <!-- Seção 1: Perfil -->
+        <div class="form-group">
+          <label>1. Qual sua idade?</label>
+          <input type="text" name="idade" />
+        </div>
+        <div class="form-group">
+          <label>2. Qual seu gênero?</label>
+          <div class="options">
+            <label><input type="radio" name="genero" value="Masculino" /> Masculino</label>
+            <label><input type="radio" name="genero" value="Feminino" /> Feminino</label>
+            <label><input type="radio" name="genero" value="Outro" /> Outro</label>
+            <label><input type="radio" name="genero" value="Prefiro não dizer" /> Prefiro não dizer</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>3. Em qual cidade/estado você mora?</label>
+          <input type="text" name="localizacao" />
+        </div>
+        <!-- Seção 2: Hábitos de audição -->
+        <div class="form-group">
+          <label>4. Quantas horas por semana você ouve música?</label>
+          <select name="horas_semana">
+            <option>Menos de 3h</option>
+            <option>3 a 6h</option>
+            <option>6 a 10h</option>
+            <option>Mais de 10h</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>5. Qual dispositivo você mais usa para ouvir música?</label>
+          <select name="dispositivo">
+            <option>Celular</option>
+            <option>Computador</option>
+            <option>Tablet</option>
+            <option>Rádio</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>6. Quando você mais ouve música?</label>
+          <select name="horario">
+            <option>Manhã</option>
+            <option>Tarde</option>
+            <option>Noite</option>
+            <option>Madrugada</option>
+          </select>
+        </div>
+        <!-- Seção 3: Preferências -->
+        <div class="form-group">
+          <label>7. Qual seu estilo musical preferido? (marque até 3)</label>
+          <div class="options">
+            <label><input type="checkbox" name="estilos" value="Rock" /> Rock</label>
+            <label><input type="checkbox" name="estilos" value="Pop" /> Pop</label>
+            <label><input type="checkbox" name="estilos" value="Sertanejo" /> Sertanejo</label>
+            <label><input type="checkbox" name="estilos" value="Funk" /> Funk</label>
+            <label><input type="checkbox" name="estilos" value="Eletrônica" /> Eletrônica</label>
+            <label><input type="checkbox" name="estilos" value="Hip Hop" /> Hip Hop</label>
+            <label><input type="checkbox" name="estilos" value="Jazz" /> Jazz</label>
+            <label><input type="checkbox" name="estilos" value="Clássica" /> Clássica</label>
+            <label><input type="checkbox" name="estilos" value="MPB" /> MPB</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>8. Qual artista ou banda você mais ouve?</label>
+          <input type="text" name="artista" />
+        </div>
+        <div class="form-group">
+          <label>9. Liste até 3 músicas que você mais ouviu no último mês:</label>
+          <textarea name="top_musicas" rows="3"></textarea>
+        </div>
+        <!-- Seção 4: Descoberta -->
+        <div class="form-group">
+          <label>10. Como você descobre novas músicas?</label>
+          <div class="options">
+            <label><input type="checkbox" name="descoberta" value="Amigos" /> Indicação de amigos</label>
+            <label><input type="checkbox" name="descoberta" value="Playlists" /> Playlists</label>
+            <label><input type="checkbox" name="descoberta" value="Rádio" /> Rádio</label>
+            <label><input type="checkbox" name="descoberta" value="Redes Sociais" /> Redes Sociais</label>
+            <label><input type="checkbox" name="descoberta" value="Shows/Festivais" /> Shows/Festivais</label>
+            <label><input type="checkbox" name="descoberta" value="Outro" /> Outro</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>11. Qual plataforma de streaming você usa para ouvir música?</label>
+          <div class="options">
+            <label><input type="checkbox" name="plataforma" value="Spotify" /> Spotify</label>
+            <label><input type="checkbox" name="plataforma" value="Apple Music" /> Apple Music</label>
+            <label><input type="checkbox" name="plataforma" value="YouTube Music" /> YouTube Music</label>
+            <label><input type="checkbox" name="plataforma" value="Deezer" /> Deezer</label>
+            <label><input type="checkbox" name="plataforma" value="Tidal" /> Tidal</label>
+            <label><input type="checkbox" name="plataforma" value="Outro" /> Outro</label>
+          </div>
+        </div>
+        <!-- Seção 5: Eventos ao vivo -->
+        <div class="form-group">
+          <label>12. Você costuma ir a shows ou festivais?</label>
+          <select name="shows_festivais">
+            <option>Sim, frequentemente</option>
+            <option>Às vezes</option>
+            <option>Raramente</option>
+            <option>Nunca</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>13. Qual foi o último show/festival que você participou?</label>
+          <input type="text" name="ultimo_evento" />
+        </div>
+        <div class="form-group">
+          <label>14. Qual show ou festival marcou você e por quê?</label>
+          <textarea name="evento_marcante" rows="3"></textarea>
+        </div>
+        <!-- Seção 6: Consumo e compra -->
+        <div class="form-group">
+          <label>15. Você compra músicas ou álbuns para ouvir offline?</label>
+          <select name="compra_offline">
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>16. Já comprou vinil ou CD recentemente?</label>
+          <select name="vinil_cd">
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>17. Você adquire produtos (camisetas, discos, merch) de artistas?</label>
+          <select name="merch">
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+        </div>
+        <!-- Seção 7: Impacto pessoal -->
+        <div class="form-group">
+          <label>18. A música influencia seu humor? Como?</label>
+          <textarea name="influencia_humor" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>19. Você já aprendeu algo (instrumento, técnica) por conta da música?</label>
+          <textarea name="aprendizado" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>20. Se pudesse recomendar uma música a todos, qual seria e por quê?</label>
+          <textarea name="indicacao_geral" rows="3"></textarea>
+        </div>
+      </div>
+      <button type="button" id="prevBtn" style="display: none">Anterior</button>
+      <button type="button" id="nextBtn">Próximo</button>
+      <button type="submit" id="submitBtn" style="display: none">Enviar</button>
+    </form>
+    <script>
+      const porPagina = 10;
+      let paginaAtual = 0;
+      const perguntas = Array.from(
+        document.querySelectorAll("#questions-container .form-group")
+      );
+      function showPage(page) {
+        const inicio = page * porPagina;
+        const fim = inicio + porPagina;
+        perguntas.forEach(
+          (q, i) => (q.style.display = i >= inicio && i < fim ? "" : "none")
+        );
+        document.getElementById("prevBtn").style.display = page ? "" : "none";
+        const isLast = page >= Math.ceil(perguntas.length / porPagina) - 1;
+        document.getElementById("nextBtn").style.display = isLast ? "none" : "";
+        document.getElementById("submitBtn").style.display = isLast ? "" : "none";
+      }
+      document.getElementById("nextBtn").addEventListener("click", () => {
+        paginaAtual++;
+        showPage(paginaAtual);
+      });
+      document.getElementById("prevBtn").addEventListener("click", () => {
+        paginaAtual--;
+        showPage(paginaAtual);
+      });
+      showPage(0);
+    </script>
+  </body>
+</html>

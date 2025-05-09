@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesquisa - Redes Sociais</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 2rem 1rem;
+        background-color: #f7f7f7;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #00c853;
+      }
+
+      form {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      input[type="text"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      button {
+        background-color: #00c853;
+        color: white;
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-right: 1rem;
+      }
+
+      button:hover {
+        background-color: #009e40;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pesquisa: Comportamento nas Redes Sociais</h1>
+    <form id="survey-form">
+      <div id="questions-container">
+        <!-- Seção 1 -->
+        <div class="form-group">
+          <label>1. Qual sua idade?</label>
+          <input type="text" name="idade" />
+        </div>
+        <div class="form-group">
+          <label>2. Qual seu gênero?</label>
+          <div class="options">
+            <label><input type="radio" name="genero" value="Masculino" /> Masculino</label>
+            <label><input type="radio" name="genero" value="Feminino" /> Feminino</label>
+            <label><input type="radio" name="genero" value="Outro" /> Outro</label>
+            <label><input type="radio" name="genero" value="Prefiro não dizer" /> Prefiro não dizer</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>3. Nível de escolaridade:</label>
+          <select name="escolaridade">
+            <option>Fundamental</option>
+            <option>Médio</option>
+            <option>Superior Incompleto</option>
+            <option>Superior Completo</option>
+            <option>Pós-graduação ou mais</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>4. Você trabalha ou estuda atualmente?</label>
+          <select name="trabalho_estudo">
+            <option>Trabalho</option>
+            <option>Estudo</option>
+            <option>Ambos</option>
+            <option>Nenhum</option>
+          </select>
+        </div>
+        <!-- Seção 2 -->
+        <div class="form-group">
+          <label>5. Quais redes sociais você mais usa? (marque até 5)</label>
+          <div class="options">
+            <label><input type="checkbox" name="redes" value="Instagram" /> Instagram</label>
+            <label><input type="checkbox" name="redes" value="WhatsApp" /> WhatsApp</label>
+            <label><input type="checkbox" name="redes" value="TikTok" /> TikTok</label>
+            <label><input type="checkbox" name="redes" value="Facebook" /> Facebook</label>
+            <label><input type="checkbox" name="redes" value="Twitter/X" /> Twitter / X</label>
+            <label><input type="checkbox" name="redes" value="YouTube" /> YouTube</label>
+            <label><input type="checkbox" name="redes" value="LinkedIn" /> LinkedIn</label>
+            <label><input type="checkbox" name="redes" value="Reddit" /> Reddit</label>
+            <label><input type="checkbox" name="redes" value="Pinterest" /> Pinterest</label>
+            <label><input type="checkbox" name="redes" value="BeReal" /> BeReal</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>6. Com que frequência você acessa redes sociais?</label>
+          <select name="frequencia">
+            <option>Várias vezes por hora</option>
+            <option>Algumas vezes por hora</option>
+            <option>Algumas vezes por dia</option>
+            <option>Apenas uma vez ao dia</option>
+            <option>Raramente</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>7. Em média, quantas horas por dia você passa nas redes sociais?</label>
+          <select name="horas_dia">
+            <option>Menos de 1 hora</option>
+            <option>1 a 3 horas</option>
+            <option>3 a 6 horas</option>
+            <option>6 a 10 horas</option>
+            <option>Mais de 10 horas</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>8. Qual horário você mais costuma usar redes sociais?</label>
+          <select name="horario">
+            <option>Manhã</option>
+            <option>Tarde</option>
+            <option>Noite</option>
+            <option>Madrugada</option>
+          </select>
+        </div>
+        <!-- Seção 3 -->
+        <div class="form-group">
+          <label>9. O que você mais consome nas redes sociais?</label>
+          <div class="options">
+            <label><input type="checkbox" name="consumo" value="Notícias" /> Notícias</label>
+            <label><input type="checkbox" name="consumo" value="Entretenimento" /> Conteúdo de entretenimento</label>
+            <label><input type="checkbox" name="consumo" value="Moda/Beleza" /> Moda / Beleza</label>
+            <label><input type="checkbox" name="consumo" value="Tecnologia" /> Tecnologia</label>
+            <label><input type="checkbox" name="consumo" value="Esportes" /> Esportes</label>
+            <label><input type="checkbox" name="consumo" value="Educação/Carreira" /> Educação / Carreira</label>
+            <label><input type="checkbox" name="consumo" value="Outro" /> Outro</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>10. Você costuma postar com frequência?</label>
+          <select name="post_frequencia">
+            <option>Sim, diariamente</option>
+            <option>Algumas vezes por semana</option>
+            <option>Raramente</option>
+            <option>Nunca</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>11. Você sente pressão para manter uma boa imagem nas redes?</label>
+          <select name="pressao_imagem">
+            <option>Sim</option>
+            <option>Não</option>
+            <option>Às vezes</option>
+          </select>
+        </div>
+        <!-- Seção 4 -->
+        <div class="form-group">
+          <label>12. Você já comparou sua vida com a de outras pessoas por causa das redes sociais?</label>
+          <select name="comparacao">
+            <option>Sim</option>
+            <option>Não</option>
+            <option>Às vezes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>13. Como você se sente após passar muito tempo nas redes?</label>
+          <textarea name="sentimento" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>14. Já pensou em sair de alguma rede social por saúde mental?</label>
+          <select name="pensou_sair">
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>15. Se sim, qual rede e por quê?</label>
+          <textarea name="qual_rede" rows="3"></textarea>
+        </div>
+        <!-- Seção 5 -->
+        <div class="form-group">
+          <label>16. Já excluiu ou desativou alguma rede social? Conte como foi a experiência.</label>
+          <textarea name="excluir_experiencia" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>17. Acha que o tempo que passa nas redes é saudável? Justifique.</label>
+          <textarea name="saude_tempo" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>18. Você conseguiria ficar 7 dias sem redes sociais? Por quê?</label>
+          <textarea name="sete_dias" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>19. Qual o maior benefício das redes sociais pra você?</label>
+          <textarea name="beneficio" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>20. E o maior problema?</label>
+          <textarea name="problema" rows="3"></textarea>
+        </div>
+      </div>
+      <button type="button" id="prevBtn" style="display: none">Anterior</button>
+      <button type="button" id="nextBtn">Próximo</button>
+      <button type="submit" id="submitBtn" style="display: none">Enviar</button>
+    </form>
+
+    <script>
+      const porPagina = 10;
+      let paginaAtual = 0;
+      const perguntas = Array.from(
+        document.querySelectorAll("#questions-container .form-group")
+      );
+
+      function showPage(page) {
+        const inicio = page * porPagina;
+        const fim = inicio + porPagina;
+        perguntas.forEach(
+          (q, i) => (q.style.display = i >= inicio && i < fim ? "" : "none")
+        );
+        document.getElementById("prevBtn").style.display = page ? "" : "none";
+        const isLast = page >= Math.ceil(perguntas.length / porPagina) - 1;
+        document.getElementById("nextBtn").style.display = isLast ? "none" : "";
+        document.getElementById("submitBtn").style.display = isLast
+          ? ""
+          : "none";
+      }
+
+      document.getElementById("nextBtn").addEventListener("click", () => {
+        paginaAtual++;
+        showPage(paginaAtual);
+      });
+      document.getElementById("prevBtn").addEventListener("click", () => {
+        paginaAtual--;
+        showPage(paginaAtual);
+      });
+
+      showPage(0);
+    </script>
+  </body>
+</html>

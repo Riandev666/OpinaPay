@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesquisa - Sustentabilidade no Dia a Dia</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 2rem 1rem;
+        background-color: #f7f7f7;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #00c853;
+      }
+      form {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+      input[type="text"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      button {
+        background-color: #00c853;
+        color: white;
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-right: 1rem;
+      }
+      button:hover {
+        background-color: #009e40;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pesquisa: Sustentabilidade no Dia a Dia</h1>
+    <form id="survey-form">
+      <div id="questions-container">
+        <!-- Seção 1: Perfil -->
+        <div class="form-group">
+          <label>1. Qual sua idade?</label>
+          <input type="text" name="idade" />
+        </div>
+        <div class="form-group">
+          <label>2. Qual seu gênero?</label>
+          <div class="options">
+            <label><input type="radio" name="genero" value="Masculino" /> Masculino</label>
+            <label><input type="radio" name="genero" value="Feminino" /> Feminino</label>
+            <label><input type="radio" name="genero" value="Outro" /> Outro</label>
+            <label><input type="radio" name="genero" value="Prefiro não dizer" /> Prefiro não dizer</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>3. Em qual cidade/estado você mora?</label>
+          <input type="text" name="localizacao" />
+        </div>
+        <!-- Seção 2: Hábitos Gerais -->
+        <div class="form-group">
+          <label>4. Você separa o lixo reciclável?</label>
+          <select name="separa_lixo">
+            <option>Sim</option>
+            <option>Não</option>
+            <option>Às vezes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>5. Costuma economizar água?</label>
+          <select name="economiza_agua">
+            <option>Sim</option>
+            <option>Não</option>
+            <option>Às vezes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>6. Costuma economizar energia elétrica?</label>
+          <select name="economiza_energia">
+            <option>Sim</option>
+            <option>Não</option>
+            <option>Às vezes</option>
+          </select>
+        </div>
+        <!-- Seção 3: Ações Ambientais -->
+        <div class="form-group">
+          <label>7. Já plantou uma árvore ou participou de ações ambientais?</label>
+          <select name="acao_ambiental">
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>8. Se sim, descreva a ação que participou:</label>
+          <textarea name="descricao_acao" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>9. Você reutiliza materiais (ex: garrafas, papel)?</label>
+          <select name="reutiliza">
+            <option>Sim</option>
+            <option>Não</option>
+            <option>Às vezes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>10. Você adota hábitos de consumo consciente (ex: comprar local)?</label>
+          <select name="consumo_consciente">
+            <option>Sim</option>
+            <option>Não</option>
+            <option>Às vezes</option>
+          </select>
+        </div>
+        <!-- Seção 4: Escala de Atitude -->
+        <div class="form-group">
+          <label>11. Em uma escala de 0 a 10, quão importante é para você a sustentabilidade?</label>
+          <input type="text" name="escala_importancia" placeholder="0 - nada; 10 - essencial" />
+        </div>
+        <div class="form-group">
+          <label>12. Em uma escala de 0 a 10, o quanto você acredita que suas ações fazem diferença?</label>
+          <input type="text" name="escala_diferenca" placeholder="0 - nada; 10 - total" />
+        </div>
+        <!-- Seção 5: Reflexão e Melhoria -->
+        <div class="form-group">
+          <label>13. Qual é o maior desafio para você praticar sustentabilidade?</label>
+          <textarea name="desafio" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>14. O que você poderia fazer para ser mais sustentável?</label>
+          <textarea name="melhoria" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>15. Você conversa sobre sustentabilidade com amigos/família?</label>
+          <select name="conversa">
+            <option>Frequentemente</option>
+            <option>Às vezes</option>
+            <option>Nunca</option>
+          </select>
+        </div>
+        <!-- Seção 6: Compromisso -->
+        <div class="form-group">
+          <label>16. Você se comprometeria a reduzir plástico por um mês?</label>
+          <select name="compromisso_plastico">
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>17. Você se comprometeria a economizar 20% de água por um mês?</label>
+          <select name="compromisso_agua">
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>18. Que ação sustentável você recomenda para todos?</label>
+          <textarea name="recomendacao" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>19. Qual benefício da sustentabilidade você valoriza mais?</label>
+          <textarea name="beneficio" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>20. Deixe uma mensagem para incentivar práticas sustentáveis:</label>
+          <textarea name="mensagem" rows="3"></textarea>
+        </div>
+      </div>
+      <button type="button" id="prevBtn" style="display: none">Anterior</button>
+      <button type="button" id="nextBtn">Próximo</button>
+      <button type="submit" id="submitBtn" style="display: none">Enviar</button>
+    </form>
+    <script>
+      const porPagina = 10;
+      let paginaAtual = 0;
+      const perguntas = Array.from(
+        document.querySelectorAll("#questions-container .form-group")
+      );
+      function showPage(page) {
+        const inicio = page * porPagina;
+        const fim = inicio + porPagina;
+        perguntas.forEach(
+          (q, i) => (q.style.display = i >= inicio && i < fim ? "" : "none")
+        );
+        document.getElementById("prevBtn").style.display = page ? "" : "none";
+        const isLast = page >= Math.ceil(perguntas.length / porPagina) - 1;
+        document.getElementById("nextBtn").style.display = isLast ? "none" : "";
+        document.getElementById("submitBtn").style.display = isLast ? "" : "none";
+      }
+      document.getElementById("nextBtn").addEventListener("click", () => {
+        paginaAtual++;
+        showPage(paginaAtual);
+      });
+      document.getElementById("prevBtn").addEventListener("click", () => {
+        paginaAtual--;
+        showPage(paginaAtual);
+      });
+      showPage(0);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesquisa - Filmes e Séries</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 2rem 1rem;
+        background-color: #f7f7f7;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #00c853;
+      }
+
+      form {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      input[type="text"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      button {
+        background-color: #00c853;
+        color: white;
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-right: 1rem;
+      }
+
+      button:hover {
+        background-color: #009e40;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <h1>Pesquisa: Seu Jeito de Ver Filmes e Séries</h1>
+    <form id="survey-form">
+      <div id="questions-container">
+        <div class="form-group">
+          <label>1. Qual sua idade?</label><input type="text" name="idade" />
+        </div>
+        <div class="form-group">
+          <label>2. Qual seu gênero?</label>
+          <div class="options">
+            <label
+              ><input type="radio" name="genero" value="Masculino" />
+              Masculino</label
+            ><label
+              ><input type="radio" name="genero" value="Feminino" />
+              Feminino</label
+            ><label
+              ><input type="radio" name="genero" value="Outro" /> Outro</label
+            ><label
+              ><input type="radio" name="genero" value="Prefiro não dizer" />
+              Prefiro não dizer</label
+            >
+          </div>
+        </div>
+        <div class="form-group">
+          <label>3. Em qual cidade/estado você mora?</label
+          ><input type="text" name="localizacao" />
+        </div>
+        <div class="form-group">
+          <label>4. Quantas horas por semana você assiste?</label
+          ><select name="horas_semana">
+            <option>Menos de 3h</option>
+            <option>Entre 3h e 6h</option>
+            <option>Entre 6h e 10h</option>
+            <option>Mais de 10h</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>5. Quando você costuma assistir mais?</label
+          ><select name="horario">
+            <option>De manhã</option>
+            <option>À tarde</option>
+            <option>À noite</option>
+            <option>Madrugada</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>6. Você assiste sozinho(a) ou com outras pessoas?</label
+          ><select name="companhia">
+            <option>Sempre sozinho</option>
+            <option>Às vezes com outros</option>
+            <option>Sempre acompanhado</option>
+            <option>Depende do conteúdo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>7. Quais gêneros você mais gosta?</label>
+          <div class="options">
+            <label
+              ><input type="checkbox" name="generos" value="Ação" /> Ação</label
+            ><label
+              ><input type="checkbox" name="generos" value="Comédia" />
+              Comédia</label
+            ><label
+              ><input type="checkbox" name="generos" value="Drama" />
+              Drama</label
+            ><label
+              ><input type="checkbox" name="generos" value="Terror" />
+              Terror</label
+            ><label
+              ><input type="checkbox" name="generos" value="Romance" />
+              Romance</label
+            ><label
+              ><input
+                type="checkbox"
+                name="generos"
+                value="Ficção científica"
+              />
+              Ficção científica</label
+            ><label
+              ><input type="checkbox" name="generos" value="Documentário" />
+              Documentário</label
+            ><label
+              ><input type="checkbox" name="generos" value="Animação" />
+              Animação</label
+            ><label
+              ><input type="checkbox" name="generos" value="Suspense" />
+              Suspense</label
+            >
+          </div>
+        </div>
+        <div class="form-group">
+          <label>8. Cite 3 filmes ou séries que marcaram sua vida:</label
+          ><textarea name="marcantes" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+          <label>9. Você prefere:</label
+          ><select name="prefere">
+            <option>Filmes</option>
+            <option>Séries</option>
+            <option>Depende da ocasião</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>10. Quais plataformas você usa?</label>
+          <div class="options">
+            <label
+              ><input type="checkbox" name="plataforma" value="Netflix" />
+              Netflix</label
+            ><label
+              ><input type="checkbox" name="plataforma" value="Prime Video" />
+              Prime Video</label
+            ><label
+              ><input type="checkbox" name="plataforma" value="Disney+" />
+              Disney+</label
+            ><label
+              ><input type="checkbox" name="plataforma" value="HBO Max" /> HBO
+              Max</label
+            ><label
+              ><input type="checkbox" name="plataforma" value="Globoplay" />
+              Globoplay</label
+            ><label
+              ><input type="checkbox" name="plataforma" value="Apple TV+" />
+              Apple TV+</label
+            >
+          </div>
+        </div>
+        <!-- 11 a 20 -->
+        <div class="form-group">
+          <label>11. Qual delas você mais usa? Por quê?</label
+          ><textarea name="mais_usada" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label
+            >12. Avalie a qualidade das plataformas que você usa (0 a
+            10):</label
+          ><input type="text" name="avaliacao" />
+        </div>
+        <div class="form-group">
+          <label>13. Qual dispositivo você mais usa para assistir?</label
+          ><select name="dispositivo">
+            <option>Televisão</option>
+            <option>Celular</option>
+            <option>Computador</option>
+            <option>Tablet</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>14. O que mais te incomoda ao assistir online?</label>
+          <div class="options">
+            <label
+              ><input type="checkbox" name="problema" value="Propagandas" />
+              Propagandas</label
+            ><label
+              ><input type="checkbox" name="problema" value="Qualidade baixa" />
+              Qualidade baixa</label
+            ><label
+              ><input
+                type="checkbox"
+                name="problema"
+                value="Catálogo limitado"
+              />
+              Catálogo limitado</label
+            ><label
+              ><input
+                type="checkbox"
+                name="problema"
+                value="Interface confusa"
+              />
+              Interface confusa</label
+            >
+          </div>
+        </div>
+        <div class="form-group">
+          <label>15. Você costuma fazer maratona de séries?</label
+          ><select name="maratona">
+            <option>Sim</option>
+            <option>Não</option>
+            <option>Às vezes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>16. O que faz um filme ou série ser bom para você?</label
+          ><textarea name="bom" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>17. Já deixou de assistir algo por spoiler?</label
+          ><select name="spoiler">
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label
+            >18. Indique uma série que todos deveriam assistir e por quê:</label
+          ><textarea name="indicacao" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label
+            >19. Filmes e séries influenciam sua forma de pensar? Como?</label
+          ><textarea name="influencia" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+          <label>20. Já assistiu algo que te inspirou a mudar? Conte:</label
+          ><textarea name="mudanca" rows="4"></textarea>
+        </div>
+      </div>
+      <button type="button" id="prevBtn" style="display: none">Anterior</button>
+      <button type="button" id="nextBtn">Próximo</button>
+      <button type="submit" id="submitBtn" style="display: none">Enviar</button>
+    </form>
+
+    <script>
+      const porPagina = 10;
+      let paginaAtual = 0;
+      const perguntas = Array.from(
+        document.querySelectorAll("#questions-container .form-group")
+      );
+
+      function showPage(page) {
+        const inicio = page * porPagina;
+        const fim = inicio + porPagina;
+        perguntas.forEach(
+          (q, i) => (q.style.display = i >= inicio && i < fim ? "" : "none")
+        );
+        document.getElementById("prevBtn").style.display = page ? "" : "none";
+        const isLast = page >= Math.ceil(perguntas.length / porPagina) - 1;
+        document.getElementById("nextBtn").style.display = isLast ? "none" : "";
+        document.getElementById("submitBtn").style.display = isLast
+          ? ""
+          : "none";
+      }
+
+      document.getElementById("nextBtn").addEventListener("click", () => {
+        paginaAtual++;
+        showPage(paginaAtual);
+      });
+      document.getElementById("prevBtn").addEventListener("click", () => {
+        paginaAtual--;
+        showPage(paginaAtual);
+      });
+
+      showPage(0);
+    </script>
+  </body>
+</html>
