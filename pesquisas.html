@@ -246,7 +246,11 @@
           <h3>${p.titulo}</h3>
           <ul class="survey-details">
             <li><img src="./img/coin.png" width="50"/> ${pontos} pontos = 💰 R$ ${valorReais}</li>
-            <li>⏱ ${(Array.isArray(p.perguntas) ? p.perguntas.length * 2 : "??")} minutos</li>
+            <li>⏱ ${
+              Array.isArray(p.perguntas)
+                ? p.perguntas.length * 2 + " minutos"
+                : "Duração indefinida"
+            }</li>
 
           </ul>
         </div>
