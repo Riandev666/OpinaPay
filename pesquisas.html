@@ -375,26 +375,21 @@
       <div id="pagination" class="pagination"></div>
       <section class="available-surveys">
 <script>
-const API_URL = "https://opinapay.onrender.com";
-const realPerPoint = 10 / 25;
+    const API_URL = 'https://opinapay.onrender.com';
+    const realPerPoint = 10/25;
 
-console.log("Token no localStorage:", localStorage.getItem("token"));
-console.log("Pontos no localStorage:", localStorage.getItem("pontosAcumulados"));
-
-function getHeaders() {
+    function getHeaders() {
       return {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       };
     }
 
-async function fetchUserPoints() {
+    async function fetchUserPoints() {
       try {
         const res = await fetch(`${API_URL}/user/points`, { headers: getHeaders() });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        console.log('Resposta /user/points →', data);
-
         const pontos = data.points
           ?? data.pontos
           ?? data.pontosAcumulados
@@ -402,9 +397,8 @@ async function fetchUserPoints() {
           ?? 0;
         localStorage.setItem('pontosAcumulados', pontos);
         return pontos;
-      } catch (err) {
-        console.error('Erro ao buscar pontos:', err);
-        return parseInt(localStorage.getItem('pontosAcumulados'), 10) || 0;
+      } catch {
+        return parseInt(localStorage.getItem('pontosAcumulados'),10) || 0;
       }
     }
 
@@ -419,21 +413,21 @@ async function addUserPoints(points) {
 }
 
 
-    async function atualizarPontosUI() {
+async function atualizarPontosUI() {
       const pontos = await fetchUserPoints();
       const valor = (pontos * realPerPoint).toFixed(2);
 
       document.getElementById('user-points').textContent = pontos;
-      document.getElementById('points-reais').textContent = `R$ ${valor}`;
+      document.getElementById('points-reais').textContent = `R$ ${valor}`;
       document.getElementById('valorSaque').textContent = valor;
-      document.getElementById('valorDisponivel').value = `R$ ${valor}`;
-      document.getElementById('progress-bar').style.width = `${(pontos / 1000) * 100}%`;
+      document.getElementById('valorDisponivel').value = `R$ ${valor}`;
+      document.getElementById('progress-bar').style.width = `${(pontos/1000)*100}%`;
       document.getElementById('btnSacar').disabled = pontos < 1000;
 
-      // Exibe o container agora que já está atualizado
       document.querySelector('.points-container').style.visibility = 'visible';
     }
-    
+
+
 async function montarListaDePesquisas() {
   const perPage = 10;
   const params = new URLSearchParams(location.search);
@@ -516,16 +510,16 @@ function configurarSaque() {
 function fecharModal() {
   document.getElementById("modalSaque").style.display = "none";
 }
-
-document.addEventListener('DOMContentLoaded', async () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       if (!localStorage.getItem('token')) {
-        alert('Você precisa estar logado para acessar esta página!');
-        return window.location.href = 'cadastro.html';
+        alert('Você precisa estar logado!');
+        return window.location.href='cadastro.html';
       }
       await atualizarPontosUI();
       await montarListaDePesquisas();
       configurarSaque();
 
+      // Exibe alert e força refresh após voltar de sucesso
       if (new URLSearchParams(window.location.search).has('fromSuccess')) {
         alert('🎉 Parabéns! Seus pontos foram creditados com sucesso!');
         await atualizarPontosUI();
