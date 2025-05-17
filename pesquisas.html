@@ -6,6 +6,7 @@
     <title>Pesquisas Disponíveis - VocêOpina</title>
     <link rel="stylesheet" href="./pesquisas.css" />
     <style>
+      
       .surveys-page {
         padding: 2rem 1rem;
         max-width: 1200px;
@@ -377,49 +378,36 @@
 const API_URL = "https://opinapay.onrender.com";
 const realPerPoint = 10 / 25;
 
-// DEBUG: Verificação inicial
 console.log("Token no localStorage:", localStorage.getItem("token"));
 console.log("Pontos no localStorage:", localStorage.getItem("pontosAcumulados"));
 
-// Função para obter headers
 function getHeaders() {
-  const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}`
-  };
-}
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      };
+    }
 
-// Função original para buscar pontos - COM CORREÇÃO
 async function fetchUserPoints() {
-  try {
-    const res = await fetch(`${API_URL}/user/points`, {
-      headers: getHeaders()
-    });
-    
-    if (!res.ok) {
-      throw new Error(`Erro HTTP ${res.status}`);
-    }
-    
-    const data = await res.json();
-console.log("Resposta /user/points →", data);
+      try {
+        const res = await fetch(`${API_URL}/user/points`, { headers: getHeaders() });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        console.log('Resposta /user/points →', data);
 
-    
-    // Garante que pontos são salvos no localStorage
-    if (data.points) {
-      localStorage.setItem("pontosAcumulados", data.points);
+        const pontos = data.points
+          ?? data.pontos
+          ?? data.pontosAcumulados
+          ?? data.data?.points
+          ?? 0;
+        localStorage.setItem('pontosAcumulados', pontos);
+        return pontos;
+      } catch (err) {
+        console.error('Erro ao buscar pontos:', err);
+        return parseInt(localStorage.getItem('pontosAcumulados'), 10) || 0;
+      }
     }
-    
-    return data.points || 0;
-    
-  } catch (error) {
-    console.error("Erro ao buscar pontos:", error);
-    // Fallback: usa localStorage se API falhar
-    return parseInt(localStorage.getItem("pontosAcumulados")) || 0;
-  }
-}
 
-// SUA FUNÇÃO ORIGINAL (sem alterações)
 async function addUserPoints(points) {
   const res = await fetch(`${API_URL}/user/points`, {
     method: "POST",
@@ -430,20 +418,21 @@ async function addUserPoints(points) {
   return json.points;
 }
 
-// SUA FUNÇÃO ORIGINAL (com pequeno ajuste de fallback)
-async function atualizarPontosUI() {
-  const pontos = await fetchUserPoints();
-  const valor = (pontos * realPerPoint).toFixed(2);
+ async function atualizarPontosUI() {
+      const pontos = await fetchUserPoints();
+      const valor = (pontos * realPerPoint).toFixed(2);
 
-  document.getElementById("user-points").textContent = pontos;
-  document.getElementById("points-reais").textContent = `R$ ${valor}`;
-  document.getElementById("valorSaque").textContent = valor;
-  document.getElementById("valorDisponivel").value = `R$ ${valor}`;
-  document.getElementById("progress-bar").style.width = `${(pontos/1000)*100}%`;
-  document.getElementById("btnSacar").disabled = pontos < 1000;
-}
+      document.getElementById('user-points').textContent = pontos;
+      document.getElementById('points-reais').textContent = `R$ ${valor}`;
+      document.getElementById('valorSaque').textContent = valor;
+      document.getElementById('valorDisponivel').value = `R$ ${valor}`;
+      document.getElementById('progress-bar').style.width = `${(pontos / 1000) * 100}%`;
+      document.getElementById('btnSacar').disabled = pontos < 1000;
 
-// SUA FUNÇÃO ORIGINAL (sem alterações)
+
+      document.querySelector('.points-container').style.visibility = 'visible';
+    }
+
 async function montarListaDePesquisas() {
   const perPage = 10;
   const params = new URLSearchParams(location.search);
@@ -527,29 +516,20 @@ function fecharModal() {
   document.getElementById("modalSaque").style.display = "none";
 }
 
-// Inicialização - COM PEQUENO AJUSTE PARA GARANTIR ATUALIZAÇÃO
-document.addEventListener("DOMContentLoaded", async () => {
-  // 1) Verificar autenticação
-  if (!localStorage.getItem("token")) {
-    alert("Você precisa estar logado para acessar esta página!");
-    window.location.href = "cadastro.html";
-    return;
-  }
+document.addEventListener('DOMContentLoaded', async () => {
+      if (!localStorage.getItem('token')) {
+        alert('Você precisa estar logado para acessar esta página!');
+        return window.location.href = 'cadastro.html';
+      }
+      await atualizarPontosUI();
+      await montarListaDePesquisas();
+      configurarSaque();
 
-  // 2) Carregar pontos IMEDIATAMENTE
-  await atualizarPontosUI();
-  
-  // 3) Restante da sua lógica original
-  await montarListaDePesquisas();
-  configurarSaque();
-
-  // 4) Verificar se veio de redirecionamento
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has("fromSuccess")) {
-    alert("🎉 Parabéns! Seus pontos foram creditados com sucesso!");
-    await atualizarPontosUI();
-  }
-});
+      if (new URLSearchParams(window.location.search).has('fromSuccess')) {
+        alert('🎉 Parabéns! Seus pontos foram creditados com sucesso!');
+        await atualizarPontosUI();
+      }
+    });
 </script>
 
       </section>

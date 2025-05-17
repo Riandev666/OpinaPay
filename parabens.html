@@ -1,0 +1,64 @@
+<!-- parabens.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Parabéns!</title>
+  <style>
+    body { display:flex; align-items:center; justify-content:center; height:100vh; font-family:Arial,sans-serif; background:#f0f0f0; margin:0; }
+    .card { background:white; padding:2rem; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); text-align:center; max-width:320px; }
+    .card h1 { margin-bottom:1rem; color:#00c853; }
+    .card p { margin:0.5rem 0; font-size:1.1rem; }
+    .btn-home { display:inline-block; margin-top:1.5rem; padding:0.6rem 1.2rem; background:#00c853; color:white; text-decoration:none; border-radius:4px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Obrigado pela participação!</h1>
+    <p id="msg-pontos"></p>
+    <p id="msg-reais"></p>
+  </div>
+
+  <script>
+    (async () => {
+      const API_URL = "https://opinapay.onrender.com";
+      const token = localStorage.getItem('token');
+      const qs = new URLSearchParams(window.location.search);
+      const pontosGanhos = parseInt(qs.get('pontos'), 10) || 0;
+      const reais = qs.get('reais') || '0.00';
+
+      try {
+        const res = await fetch(`${API_URL}/user/points`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ pointsToAdd: pontosGanhos })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const { points: pontosAtualizados } = await res.json();
+
+        // Atualiza localStorage com valor do servidor
+        localStorage.setItem('pontosAcumulados', pontosAtualizados);
+
+        // Exibe mensagem
+        document.getElementById('msg-pontos').innerText =
+          `Você ganhou ${pontosGanhos} pontos nesta pesquisa.`;
+        document.getElementById('msg-reais').innerText =
+          `Isso equivale a R$ ${reais}.`;
+
+        // Após 1s, redireciona para pesquisas
+        setTimeout(() => {
+          window.location.href = 'pesquisas.html?fromSuccess=true';
+        }, 1000);
+      } catch (err) {
+        console.error('Erro ao creditar pontos:', err);
+        alert('Não foi possível creditar seus pontos. Tente novamente.');
+        window.location.href = 'pesquisas.html';
+      }
+    })();
+  </script>
+</body>
+</html>
