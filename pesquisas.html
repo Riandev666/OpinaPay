@@ -419,21 +419,21 @@ async function addUserPoints(points) {
 }
 
 
-async function atualizarPontosUI() {
-  const pontos = await fetchUserPoints();
-  const valor = (pontos * realPerPoint).toFixed(2);
+    async function atualizarPontosUI() {
+      const pontos = await fetchUserPoints();
+      const valor = (pontos * realPerPoint).toFixed(2);
 
-  document.getElementById("user-points").textContent = pontos;
-  document.getElementById("points-reais").textContent = `R$ ${valor}`;
-  document.getElementById("valorSaque").textContent = valor;
-  document.getElementById("valorDisponivel").value = `R$ ${valor}`;
-  document.getElementById("progress-bar").style.width = `${(pontos/1000)*100}%`;
-  document.getElementById("btnSacar").disabled = pontos < 1000;
+      document.getElementById('user-points').textContent = pontos;
+      document.getElementById('points-reais').textContent = `R$ ${valor}`;
+      document.getElementById('valorSaque').textContent = valor;
+      document.getElementById('valorDisponivel').value = `R$ ${valor}`;
+      document.getElementById('progress-bar').style.width = `${(pontos / 1000) * 100}%`;
+      document.getElementById('btnSacar').disabled = pontos < 1000;
 
-   document.querySelector('.points-container').style.visibility = 'visible';
-}
-
-// SUA FUNÇÃO ORIGINAL (sem alterações)
+      // Exibe o container agora que já está atualizado
+      document.querySelector('.points-container').style.visibility = 'visible';
+    }
+    
 async function montarListaDePesquisas() {
   const perPage = 10;
   const params = new URLSearchParams(location.search);
