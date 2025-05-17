@@ -429,6 +429,8 @@ async function atualizarPontosUI() {
   document.getElementById("valorDisponivel").value = `R$ ${valor}`;
   document.getElementById("progress-bar").style.width = `${(pontos/1000)*100}%`;
   document.getElementById("btnSacar").disabled = pontos < 1000;
+
+   document.querySelector('.points-container').style.visibility = 'visible';
 }
 
 // SUA FUNÇÃO ORIGINAL (sem alterações)
