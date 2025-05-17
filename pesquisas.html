@@ -401,17 +401,37 @@
   }
 
   // Atualiza o bloco de pontos e progresso na UI
-  async function atualizarValorSaque() {
-    const pontos = await fetchUserPoints();
-    const valor  = (pontos * realPerPoint).toFixed(2);
+async function atualizarValorSaque() {
+  try {
+    // Sempre busca os pontos do backend usando o token do usuário logado
+    const res = await fetch(`${API_URL}/user/points`, { 
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      }
+    });
+    
+    if (!res.ok) {
+      throw new Error('Erro ao buscar pontos');
+    }
+    
+    const data = await res.json();
+    const pontos = data.points || 0;
+    const valor = (pontos * realPerPoint).toFixed(2);
 
-    document.getElementById("user-points").textContent    = pontos;
-    document.getElementById("points-reais").textContent   = `R$ ${valor}`;
-    document.getElementById("valorSaque").textContent     = valor;
-    document.getElementById("valorDisponivel").value      = `R$ ${valor}`;
-    document.getElementById("progress-bar").style.width   = `${(pontos/1000)*100}%`;
-    document.getElementById("btnSacar").disabled          = pontos < 1000;
+    // Atualiza a UI
+    document.getElementById("user-points").textContent = pontos;
+    document.getElementById("points-reais").textContent = `R$ ${valor}`;
+    document.getElementById("valorSaque").textContent = valor;
+    document.getElementById("valorDisponivel").value = `R$ ${valor}`;
+    document.getElementById("progress-bar").style.width = `${(pontos/1000)*100}%`;
+    document.getElementById("btnSacar").disabled = pontos < 1000;
+    
+  } catch (error) {
+    console.error('Erro ao atualizar pontos:', error);
+    // Opcional: mostrar mensagem de erro ao usuário
   }
+}
 
   // Monta a lista de pesquisas
   async function montarListaDePesquisas() {
