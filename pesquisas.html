@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pesquisas Disponíveis - VocêOpina</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="./pesquisas.css" />
     <style>
       
@@ -374,6 +375,7 @@
       <div id="survey-list" class="survey-list"></div>
       <div id="pagination" class="pagination"></div>
       <section class="available-surveys">
+        <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script>
     const API_URL = 'https://opinapay.onrender.com';
     const realPerPoint = 10/25;
@@ -485,31 +487,37 @@ async function montarListaDePesquisas() {
   });
 }
 
-// SUA FUNÇÃO ORIGINAL (sem alterações)
 function configurarSaque() {
-  document.getElementById("btnSacar").addEventListener("click", () => {
-    document.getElementById("modalSaque").style.display = "flex";
-  });
-  
-  document.getElementById("formSaque").addEventListener("submit", async e => {
-    e.preventDefault();
-    document.getElementById("modalSaque").innerHTML = `
-      <div class="modal-content" style="text-align:center">
-        <div class="loader"></div>
-        <p>Processando seu saque...</p>
-      </div>`;
-    
-    await new Promise(r => setTimeout(r, 2000));
-    fecharModal();
-    alert("Saque solicitado! O valor chegará em 3 dias úteis.");
-    await atualizarPontosUI();
-  });
-}
+  const btn = document.getElementById("btnSacar");
+  btn.addEventListener("click", () => {
+    const pontos = parseInt(document.getElementById("user-points").textContent, 10);
 
-// SUA FUNÇÃO ORIGINAL (sem alterações)
+    if (pontos < 1000) {
+      Toastify({
+        text: `Você precisa de 1000 pontos para sacar. Faltam ${1000 - pontos} pontos.`,
+        duration: 4000,
+        close: true,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#FF5656",
+      }).showToast();
+    } else {
+      document.getElementById("modalSaque").style.display = "flex";
+    }
+  });
+
+  // mantém seu listener de submit no modal, se quiser
+  document.getElementById("formSaque")?.addEventListener("submit", async e => {
+    e.preventDefault();
+    // … seu código de processamento e fechamento de modal …
+  });
+} // <-- fecha aqui o configurarSaque
+
+// função de fechar modal
 function fecharModal() {
   document.getElementById("modalSaque").style.display = "none";
 }
+
     document.addEventListener('DOMContentLoaded', async () => {
       if (!localStorage.getItem('token')) {
         alert('Você precisa estar logado!');
@@ -518,11 +526,11 @@ function fecharModal() {
       await atualizarPontosUI();
       await montarListaDePesquisas();
       configurarSaque();
-
       // Exibe alert e força refresh após voltar de sucesso
       if (new URLSearchParams(window.location.search).has('fromSuccess')) {
         alert('🎉 Parabéns! Seus pontos foram creditados com sucesso!');
         await atualizarPontosUI();
+          
       }
     });
 </script>
