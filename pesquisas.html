@@ -376,10 +376,7 @@
       <div id="pagination" class="pagination"></div>
       <section class="available-surveys">
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-  <!-- Toastify (antes do seu script) -->
-  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
-  <script>
+<script>
     const API_URL = 'https://opinapay.onrender.com';
     const realPerPoint = 10/25;
 
@@ -395,16 +392,30 @@
         const res = await fetch(`${API_URL}/user/points`, { headers: getHeaders() });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        const pontos = data.points ?? data.pontos ?? data.pontosAcumulados ?? data.data?.points ?? 0;
+        const pontos = data.points
+          ?? data.pontos
+          ?? data.pontosAcumulados
+          ?? data.data?.points
+          ?? 0;
         localStorage.setItem('pontosAcumulados', pontos);
         return pontos;
-      } catch (err) {
-        console.warn('fetchUserPoints erro:', err);
-        return parseInt(localStorage.getItem('pontosAcumulados'), 10) || 0;
+      } catch {
+        return parseInt(localStorage.getItem('pontosAcumulados'),10) || 0;
       }
     }
 
-    async function atualizarPontosUI() {
+async function addUserPoints(points) {
+  const res = await fetch(`${API_URL}/user/points`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ pointsToAdd: points })
+  });
+  const json = await res.json();
+  return json.points;
+}
+
+
+async function atualizarPontosUI() {
       const pontos = await fetchUserPoints();
       const valor = (pontos * realPerPoint).toFixed(2);
 
@@ -414,65 +425,115 @@
       document.getElementById('valorDisponivel').value = `R$ ${valor}`;
       document.getElementById('progress-bar').style.width = `${(pontos/1000)*100}%`;
       document.getElementById('btnSacar').disabled = pontos < 1000;
+
       document.querySelector('.points-container').style.visibility = 'visible';
     }
 
-    function configurarSaque() {
-      const btn = document.getElementById('btnSacar');
-      if (!btn) {
-        console.error('botão de sacar não encontrado');
-        return;
-      }
 
-      btn.addEventListener('click', () => {
-        const pontos = parseInt(document.getElementById('user-points').textContent, 10);
-        if (pontos < 1000) {
-          Toastify({
-            text: `Você precisa de 1000 pontos para sacar. Faltam ${1000 - pontos} pontos.`,
-            duration: 4000,
-            close: true,
-            gravity: 'top',
-            position: 'center',
-            backgroundColor: '#FF5656'
-          }).showToast();
-        } else {
-          document.getElementById('modalSaque').style.display = 'flex';
-        }
-      });
+async function montarListaDePesquisas() {
+  const perPage = 10;
+  const params = new URLSearchParams(location.search);
+  const page = parseInt(params.get("page") || "1", 10);
 
-      const form = document.getElementById('formSaque');
-      if (form) {
-        form.addEventListener('submit', async e => {
-          e.preventDefault();
-          // aqui seu processamento de saque…
-          fecharModal();
-        });
-      }
-    } // <-- fecha configurarSaque
+  const res = await fetch(`${API_URL}/api/pesquisas`);
+  const pesquisas = await res.json();
 
-    function fecharModal() {
-      document.getElementById('modalSaque').style.display = 'none';
+  const start = (page - 1) * perPage;
+  const subset = pesquisas.slice(start, start + perPage);
+
+  document.getElementById("survey-list").innerHTML = subset
+    .map(p => {
+      const pontos = p.id * 25;
+      const valorReais = (pontos * realPerPoint).toFixed(2);
+      const links = {
+        1: "filmes.html",
+        2: "social.html",
+        3: "musicas.html",
+        4: "sono.html",
+        5: "sustentabilidade.html",
+      };
+      return `
+        <article class="survey-card" data-id="${p.id}">
+          <div class="survey-info">
+            <h3>${p.titulo}</h3>
+            <ul class="survey-details">
+              <li><img src="./img/coin.png" width="50"/> ${pontos} pontos = 💰 R$ ${valorReais}</li>
+              <li>⏱ ${Array.isArray(p.perguntas)? p.perguntas.length*2+' minutos':'Duração indefinida'}</li>
+            </ul>
+          </div>
+          ${
+            p.id <= 5
+              ? `<a href="${links[p.id]}" class="btn-primary">Responder</a>`
+              : `<button class="btn-primary btn-responder">Responder</button>`
+          }
+        </article>
+      `;
+    }).join("");
+
+  // Paginação
+  const totalPages = Math.ceil(pesquisas.length / perPage);
+  document.getElementById("pagination").innerHTML = [
+    page > 1 ? `<a href="?page=${page-1}">← Anterior</a>` : "",
+    `Página ${page} de ${totalPages}`,
+    page < totalPages ? `<a href="?page=${page+1}">Próximo →</a>` : ""
+  ].join(" | ");
+
+  // Eventos de responder
+  document.querySelectorAll(".btn-responder").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.closest(".survey-card").dataset.id;
+      location.href = `formulario-pesquisas.html?pesquisa=${id}`;
+    });
+  });
+}
+
+function configurarSaque() {
+  const btn = document.getElementById("btnSacar");
+  btn.addEventListener("click", () => {
+    const pontos = parseInt(document.getElementById("user-points").textContent, 10);
+
+    if (pontos < 1000) {
+      Toastify({
+        text: `Você precisa de 1000 pontos para sacar. Faltam ${1000 - pontos} pontos.`,
+        duration: 4000,
+        close: true,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#FF5656",
+      }).showToast();
+    } else {
+      document.getElementById("modalSaque").style.display = "flex";
     }
+  });
+
+  // mantém seu listener de submit no modal, se quiser
+  document.getElementById("formSaque")?.addEventListener("submit", async e => {
+    e.preventDefault();
+    // … seu código de processamento e fechamento de modal …
+  });
+} // <-- fecha aqui o configurarSaque
+
+// função de fechar modal
+function fecharModal() {
+  document.getElementById("modalSaque").style.display = "none";
+}
 
     document.addEventListener('DOMContentLoaded', async () => {
       if (!localStorage.getItem('token')) {
         alert('Você precisa estar logado!');
-        return window.location.href = 'cadastro.html';
+        return window.location.href='cadastro.html';
       }
-
       await atualizarPontosUI();
+      await montarListaDePesquisas();
       configurarSaque();
-
+      // Exibe alert e força refresh após voltar de sucesso
       if (new URLSearchParams(window.location.search).has('fromSuccess')) {
         alert('🎉 Parabéns! Seus pontos foram creditados com sucesso!');
         await atualizarPontosUI();
-        configurarSaque();
+          
       }
-
-      await montarListaDePesquisas(); // caso já exista
     });
-  </script>
-
+</script>
 
       </section>
     </main>
@@ -533,6 +594,21 @@
         overlay.addEventListener("click", toggleMenu);
       });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<!-- Seu script personalizado -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM carregado');
+    const btn = document.getElementById('btnSacar');
+    console.log('btnSacar existe?', !!btn);
+
+    btn.addEventListener('click', () => {
+      console.log('clicou no sacar!');
+      // resto da lógica…
+    });
+  });
+</script>
   </body>
 
   <audio
