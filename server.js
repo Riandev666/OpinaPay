@@ -220,22 +220,30 @@ app.get("/user/points", authenticateToken, async (req, res) => {
   res.json({ points });
 });
 
-// POST /user/points — soma pontos ao usuário logado
+// POST /user/points — soma pontos ao usuário logado (com upsert)
 app.post("/user/points", authenticateToken, async (req, res) => {
   const { userId }     = req.user;
   const { pointsToAdd } = req.body;
-  await pool.query(
-    `UPDATE user_points
-       SET points = points + $1
-     WHERE user_id = $2`,
-    [pointsToAdd, userId]
-  );
-  const updated = await pool.query(
-    "SELECT points FROM user_points WHERE user_id = $1",
-    [userId]
-  );
-  res.json({ points: updated.rows[0].points });
+
+  try {
+    // Tenta inserir ou, se já existir user_id, atualiza somando
+    const result = await pool.query(
+      `INSERT INTO user_points (user_id, points)
+         VALUES ($1, $2)
+       ON CONFLICT (user_id)
+         DO UPDATE SET points = user_points.points + EXCLUDED.points
+       RETURNING points`,
+      [userId, pointsToAdd]
+    );
+
+    // Retorna o valor atualizado
+    return res.json({ points: result.rows[0].points });
+  } catch (err) {
+    console.error("Erro no POST /user/points:", err);
+    return res.status(500).json({ error: "Erro ao atualizar pontos" });
+  }
 });
+
 
 
 app.get("/api/pesquisas", (req, res) => {
