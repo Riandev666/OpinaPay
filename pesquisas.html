@@ -373,202 +373,150 @@
       <div id="survey-list" class="survey-list"></div>
       <div id="pagination" class="pagination"></div>
       <section class="available-surveys">
-        <script>
-          const API_URL = "https://opinapay.onrender.com";
-const token   = localStorage.getItem("token");
-const headers = {
-  "Content-Type": "application/json",
-  "Authorization": `Bearer ${token}`
-};
+<script>
+  const API_URL = "https://opinapay.onrender.com";
+  const token   = localStorage.getItem("token");
+  const headers = {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  };
+  const realPerPoint = 10 / 25;
 
-async function fetchUserPoints() {
-  const res  = await fetch(`${API_URL}/user/points`, { headers });
-  const json = await res.json();
-  return json.points;
-}
+  // Busca pontos do back-end
+  async function fetchUserPoints() {
+    const res  = await fetch(`${API_URL}/user/points`, { headers });
+    const json = await res.json();
+    return json.points;
+  }
 
-async function addUserPoints(points) {
-  const res  = await fetch(`${API_URL}/user/points`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({ pointsToAdd: points })
-  });
-  const json = await res.json();
-  return json.points;
-}
+  // Adiciona pontos no back-end
+  async function addUserPoints(points) {
+    const res  = await fetch(`${API_URL}/user/points`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ pointsToAdd: points })
+    });
+    const json = await res.json();
+    return json.points;
+  }
 
-          const realPerPoint = 10 / 25;
+  // Atualiza o bloco de pontos e progresso na UI
+  async function atualizarValorSaque() {
+    const pontos = await fetchUserPoints();
+    const valor  = (pontos * realPerPoint).toFixed(2);
 
-          async function atualizarValorSaque() {
-            const pontos = await fetchUserPoints();
-  const valor  = (pontos * realPerPoint).toFixed(2);
+    document.getElementById("user-points").textContent    = pontos;
+    document.getElementById("points-reais").textContent   = `R$ ${valor}`;
+    document.getElementById("valorSaque").textContent     = valor;
+    document.getElementById("valorDisponivel").value      = `R$ ${valor}`;
+    document.getElementById("progress-bar").style.width   = `${(pontos/1000)*100}%`;
+    document.getElementById("btnSacar").disabled          = pontos < 1000;
+  }
 
-            document.getElementById("valorSaque").textContent = valor;
-            document.getElementById("valorDisponivel").value = `R$ ${valor}`;
-            document.getElementById("btnSacar").disabled = pontos < 1000;
-            document.getElementById("progress-bar").style.width = `${
-              (pontos / 1000) * 100
-            }%`;
-            document.getElementById("user-points").textContent = pontos;
-            document.getElementById("points-reais").textContent = `R$ ${valor}`;
-          }
+  // Monta a lista de pesquisas
+  async function montarListaDePesquisas() {
+    const perPage = 10;
+    const params  = new URLSearchParams(location.search);
+    const page    = parseInt(params.get("page") || "1", 10);
 
-          document.addEventListener("DOMContentLoaded", () => {
-            const token = localStorage.getItem("token");
+    const res       = await fetch(`${API_URL}/api/pesquisas`);
+    const pesquisas = await res.json();
 
-            if (!token) {
-              alert("Você precisa estar logado para acessar esta página!");
-              window.location.href = "cadastro.html";
-              return;
+    const start  = (page - 1) * perPage;
+    const subset = pesquisas.slice(start, start + perPage);
+
+    document.getElementById("survey-list").innerHTML = subset
+      .map(p => {
+        const pontos     = p.id * 25;
+        const valorReais = (pontos * realPerPoint).toFixed(2);
+        const links      = {
+          1: "filmes.html",
+          2: "social.html",
+          3: "musicas.html",
+          4: "sono.html",
+          5: "sustentabilidade.html",
+        };
+        return `
+          <article class="survey-card" data-id="${p.id}">
+            <div class="survey-info">
+              <h3>${p.titulo}</h3>
+              <ul class="survey-details">
+                <li><img src="./img/coin.png" width="50"/> ${pontos} pontos = 💰 R$ ${valorReais}</li>
+                <li>⏱ ${Array.isArray(p.perguntas)? p.perguntas.length*2+' minutos':'Duração indefinida'}</li>
+              </ul>
+            </div>
+            ${
+              p.id <= 5
+                ? `<a href="${links[p.id]}" class="btn-primary">Responder</a>`
+                : `<button class="btn-primary btn-responder">Responder</button>`
             }
-
-            atualizarValorSaque();
-            // ...
-          });
-          document.addEventListener("DOMContentLoaded", async () => {
-            atualizarValorSaque();
-
-            document
-              .getElementById("btnSacar")
-              .addEventListener("click", () => {
-                document.getElementById("modalSaque").style.display = "flex";
-              });
-
-            document
-              .getElementById("formSaque")
-              .addEventListener("submit", (e) => {
-                e.preventDefault();
-                document.getElementById("modalSaque").innerHTML = `
-            <div class="modal-content" style="text-align:center">
-              <div class="loader"></div>
-              <p>Processando seu saque...</p>
-            </div>
-          `;
-
-                setTimeout(() => {
-                  document.getElementById("modalSaque").style.display = "none";
-                  alert("Saque solicitado! O valor chegará em 3 dias úteis.");
-                  localStorage.setItem("pontosAcumulados", 0);
-                  atualizarValorSaque();
-                }, 2000);
-              });
-
-            const perPage = 10;
-            const params = new URLSearchParams(location.search);
-            const page = parseInt(params.get("page") || "1", 10);
-
-            const res = await fetch(`${API_URL}/api/pesquisas`);
-            const pesquisas = await res.json();
-
-            const start = (page - 1) * perPage;
-            const end = start + perPage;
-            const subset = pesquisas.slice(start, end);
-
-            document.getElementById("survey-list").innerHTML = subset
-              .map((p) => {
-                const pontos = p.id * 25;
-                const valorReais = (pontos * realPerPoint).toFixed(2);
-                const staticLinks = {
-                  1: "filmes.html",
-                  2: "social.html",
-                  3: "musicas.html",
-                  4: "sono.html",
-                  5: "sustentabilidade.html",
-                };
-
-                return `
-            <article class="survey-card" data-id="${p.id}">
-              <div class="survey-info">
-                <h3>${p.titulo}</h3>
-                <ul class="survey-details">
-                  <li><img src="./img/coin.png" width="50"/> ${pontos} pontos = 💰 R$ ${valorReais}</li>
-                  <li>⏱ ${
-                    Array.isArray(p.perguntas)
-                      ? p.perguntas.length * 2 + " minutos"
-                      : "Duração indefinida"
-                  }</li>
-                </ul>
-              </div>
-              ${
-                p.id <= 5
-                  ? `<a href="${
-                      staticLinks[p.id]
-                    }" class="btn-primary">Responder</a>`
-                  : `<button class="btn-primary btn-responder">Responder</button>`
-              }
-            </article>
-          `;
-              })
-              .join("");
-
-            const totalPages = Math.ceil(pesquisas.length / perPage);
-            document.getElementById("pagination").innerHTML = [
-              page > 1 ? `<a href="?page=${page - 1}">← Anterior</a>` : "",
-              `Página ${page} de ${totalPages}`,
-              page < totalPages
-                ? `<a href="?page=${page + 1}">Próximo →</a>`
-                : "",
-            ].join(" | ");
-
-            document.querySelectorAll(".btn-responder").forEach((btn) => {
-              btn.addEventListener("click", () => {
-                const id = btn.closest(".survey-card").dataset.id;
-                location.href = `formulario-pesquisas.html?pesquisa=${id}`;
-              });
-            });
-          });
-
-          const urlParams = new URLSearchParams(window.location.search);
-          if (urlParams.has("fromSuccess")) {
-            const pontos =
-              parseInt(localStorage.getItem("pontosAcumulados")) || 0;
-            const valor = (pontos * realPerPoint).toFixed(2);
-            alert(`Parabéns! Você ganhou ${pontos} pontos (R$ ${valor})!`);
-            atualizarValorSaque();
-          }
-
-          function fecharModal() {
-            document.getElementById("modalSaque").style.display = "none";
-          }
-
-          document.getElementById("btnSacar").addEventListener("click", () => {
-            document.getElementById("modalSaque").style.display = "flex";
-            atualizarValorSaque();
-          });
-
-          document
-            .getElementById("formSaque")
-            .addEventListener("submit", function (e) {
-              e.preventDefault();
-
-              const modalContent = `
-        <div class="modal-content" style="text-align:center">
-            <div class="loader"></div>
-            <p>Processando seu saque...</p>
-        </div>
-    `;
-              document.getElementById("modalSaque").innerHTML = modalContent;
-
-              setTimeout(() => {
-                fecharModal();
-                alert(
-                  "Saque solicitado com sucesso!\nValor chegará em 3 dias úteis."
-                );
-                localStorage.setItem("pontosAcumulados", 0);
-                atualizarValorSaque();
-
-                document.getElementById("modalSaque").innerHTML = `
-            <div class="modal-content">
-                <h3>Sacar Fundos 💰</h3>
-                <form id="formSaque">
-                    <!-- ... (mantenha os campos do formulário) ... -->
-                </form>
-                <button onclick="fecharModal()" class="btn-fechar">×</button>
-            </div>
+          </article>
         `;
-              }, 2000);
-            });
-        </script>
+      }).join("");
+
+    // Paginação
+    const totalPages = Math.ceil(pesquisas.length / perPage);
+    document.getElementById("pagination").innerHTML = [
+      page > 1 ? `<a href="?page=${page-1}">← Anterior</a>` : "",
+      `Página ${page} de ${totalPages}`,
+      page < totalPages ? `<a href="?page=${page+1}">Próximo →</a>` : ""
+    ].join(" | ");
+
+    // Eventos de responder
+    document.querySelectorAll(".btn-responder").forEach(btn => {
+      btn.addEventListener("click", _ => {
+        const id = btn.closest(".survey-card").dataset.id;
+        location.href = `formulario-pesquisas.html?pesquisa=${id}`;
+      });
+    });
+  }
+
+  // Configura modal de saque
+  function configurarSaque() {
+    document.getElementById("btnSacar").addEventListener("click", () => {
+      document.getElementById("modalSaque").style.display = "flex";
+    });
+    document.getElementById("formSaque").addEventListener("submit", async e => {
+      e.preventDefault();
+      document.getElementById("modalSaque").innerHTML = `
+        <div class="modal-content" style="text-align:center">
+          <div class="loader"></div>
+          <p>Processando seu saque...</p>
+        </div>`;
+      await new Promise(r => setTimeout(r, 2000));
+      fecharModal();
+      alert("Saque solicitado! O valor chegará em 3 dias úteis.");
+      await atualizarValorSaque();
+      // re-renderiza o conteúdo original do modal se precisar...
+    });
+  }
+
+  function fecharModal() {
+    document.getElementById("modalSaque").style.display = "none";
+  }
+
+  // Inicialização
+  document.addEventListener("DOMContentLoaded", async () => {
+    // 1) Autenticação
+    if (!token) {
+      alert("Você precisa estar logado para acessar esta página!");
+      return window.location.href = "cadastro.html";
+    }
+
+    // 2) Pontos e lista
+    await atualizarValorSaque();
+    await montarListaDePesquisas();
+    configurarSaque();
+
+    // 3) Trata fromSuccess
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("fromSuccess")) {
+      alert("🎉 Parabéns! Seus pontos foram creditados com sucesso!");
+      await atualizarValorSaque();
+    }
+  });
+</script>
+
       </section>
     </main>
 
