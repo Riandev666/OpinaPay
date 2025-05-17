@@ -373,15 +373,35 @@
       <div id="survey-list" class="survey-list"></div>
       <div id="pagination" class="pagination"></div>
       <section class="available-surveys">
-
         <script>
           const API_URL = "https://opinapay.onrender.com";
+const token   = localStorage.getItem("token");
+const headers = {
+  "Content-Type": "application/json",
+  "Authorization": `Bearer ${token}`
+};
+
+async function fetchUserPoints() {
+  const res  = await fetch(`${API_URL}/user/points`, { headers });
+  const json = await res.json();
+  return json.points;
+}
+
+async function addUserPoints(points) {
+  const res  = await fetch(`${API_URL}/user/points`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ pointsToAdd: points })
+  });
+  const json = await res.json();
+  return json.points;
+}
+
           const realPerPoint = 10 / 25;
 
-          function atualizarValorSaque() {
-            const pontos =
-              parseInt(localStorage.getItem("pontosAcumulados")) || 0;
-            const valor = (pontos * realPerPoint).toFixed(2);
+          async function atualizarValorSaque() {
+            const pontos = await fetchUserPoints();
+  const valor  = (pontos * realPerPoint).toFixed(2);
 
             document.getElementById("valorSaque").textContent = valor;
             document.getElementById("valorDisponivel").value = `R$ ${valor}`;
@@ -393,23 +413,18 @@
             document.getElementById("points-reais").textContent = `R$ ${valor}`;
           }
 
-          // Verificar se o usuário está autenticado
-document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem('token');
-  
-  if (!token) {
-    alert("Você precisa estar logado para acessar esta página!");
-    window.location.href = "cadastro.html";
-    return;
-  }
+          document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("token");
 
-  // Adicione esta linha para debug
-  console.log("Token encontrado:", token);
-  
-  // Restante do seu código...
-  atualizarValorSaque();
-  // ...
-});
+            if (!token) {
+              alert("Você precisa estar logado para acessar esta página!");
+              window.location.href = "cadastro.html";
+              return;
+            }
+
+            atualizarValorSaque();
+            // ...
+          });
           document.addEventListener("DOMContentLoaded", async () => {
             atualizarValorSaque();
 
