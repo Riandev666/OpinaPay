@@ -508,13 +508,15 @@
 
       // Submit para redirecionar à conclusão
       document.getElementById('survey-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        // Supondo que essa é a pesquisa de ID 1
-        const idPesquisa = 1;
-        const pontos = idPesquisa * 25;
-        const valorReais = (pontos * (10/25)).toFixed(2);
-        window.location.href = `conclusao.html?pontos=${pontos}&reais=${valorReais}`;
-      });
+  e.preventDefault();
+  
+  // Corrigir cálculo para 25 pontos = R$1.00
+  const idPesquisa = 1;
+  const pontos = idPesquisa * 25;
+  const valorReais = (pontos * (1/25)).toFixed(2);
+  
+  window.location.href = `conclusao.html?pontos=${pontos}&reais=${valorReais}`;
+});
     </script>
   </body>
 </html>

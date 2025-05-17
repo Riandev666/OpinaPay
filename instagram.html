@@ -163,26 +163,37 @@
           })
         );
 
-        form.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const username = form.username.value.trim();
-          const password = form.password.value;
-          try {
-            const response = await fetch(`${API_URL}/register/instagram`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ username, password }),
-            });
+       form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    const response = await fetch(`${API_URL}/register/instagram`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        username: form.username.value.trim(),
+        password: form.password.value
+      }),
+    });
 
-            const data = await response.json();
-            if (!response.ok)
-              throw new Error(data.error || "Erro no cadastro.");
-            window.location.href = "pesquisas.html";
-          } catch (err) {
-            console.error(err);
-            alert("Erro: " + err.message);
-          }
-        });
+    const data = await response.json();
+    console.log("Resposta completa da API:", data); // ← Adicione este log
+
+    if (!response.ok) {
+      throw new Error(data.error || "Erro no servidor");
+    }
+
+    if (!data.token) {
+      throw new Error("Token não veio na resposta. Resposta completa: " + JSON.stringify(data));
+    }
+
+    localStorage.setItem('token', data.token);
+    window.location.href = "pesquisas.html";
+
+  } catch (err) {
+    console.error('Detalhes do erro:', err);
+    alert("Erro: " + err.message);
+  }
+});
       });
     </script>
   </body>

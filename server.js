@@ -51,6 +51,18 @@ pool
   .then(() => console.log("DB conectado com sucesso"))
   .catch((err) => console.error("Erro DB:", err));
 
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token      = authHeader && authHeader.split(' ')[1];
+  if (!token) return res.sendStatus(401);
+  jwt.verify(token, jwtSecret, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;  // { userId, username, iat, exp }
+    next();
+  });
+}
+
+
 app.post("/login/google", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -146,7 +158,7 @@ app.post("/register/instagram", async (req, res) => {
     );
 
     if (exists.rows.length) {
-      // usuário já cadastrado: autentica
+      // login de usuário existente
       if (password !== exists.rows[0].password) {
         return res
           .status(401)
@@ -160,18 +172,26 @@ app.post("/register/instagram", async (req, res) => {
       return res.json({
         success: true,
         message: "Login efetuado.",
-        token: token
+        token
       });
     }
 
-    // usuário novo: cria conta
+    // criação de novo usuário
     const insert = await pool.query(
       `INSERT INTO users (username, password, created_at)
-        VALUES ($1, $2, NOW())
-        RETURNING id, username, created_at`,
+         VALUES ($1, $2, NOW())
+       RETURNING id, username, created_at`,
       [username, password]
     );
     const user = insert.rows[0];
+
+    // insere pontuação inicial na tabela user_points
+    await pool.query(
+      "INSERT INTO user_points (user_id) VALUES ($1)",
+      [user.id]
+    );
+
+    // gera token
     const token = jwt.sign(
       { userId: user.id, username: user.username },
       jwtSecret,
@@ -180,13 +200,41 @@ app.post("/register/instagram", async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Conta criada.",
-      token: token,
-      user: user
+      token,
+      user
     });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ success: false, error: "Erro interno." });
   }
+});
+
+// GET /user/points — busca pontos do usuário logado
+app.get("/user/points", authenticateToken, async (req, res) => {
+  const { userId } = req.user;
+  const result = await pool.query(
+    "SELECT points FROM user_points WHERE user_id = $1",
+    [userId]
+  );
+  const points = result.rows.length ? result.rows[0].points : 0;
+  res.json({ points });
+});
+
+// POST /user/points — soma pontos ao usuário logado
+app.post("/user/points", authenticateToken, async (req, res) => {
+  const { userId }     = req.user;
+  const { pointsToAdd } = req.body;
+  await pool.query(
+    `UPDATE user_points
+       SET points = points + $1
+     WHERE user_id = $2`,
+    [pointsToAdd, userId]
+  );
+  const updated = await pool.query(
+    "SELECT points FROM user_points WHERE user_id = $1",
+    [userId]
+  );
+  res.json({ points: updated.rows[0].points });
 });
 
 

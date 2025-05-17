@@ -35,7 +35,7 @@
 
       .progress {
         height: 100%;
-        background: #4caf50;
+        background: #daa520;
         transition: width 0.3s ease;
       }
 
@@ -127,6 +127,154 @@
         font-weight: bold;
         color: #666;
       }
+
+      /* Novas animações */
+      @keyframes pulseGold {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes confettiFall {
+        0% {
+          transform: translateY(-100vh) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes progressShine {
+        0% {
+          background-position: -200px 0;
+        }
+        100% {
+          background-position: 200px 0;
+        }
+      }
+
+      .user-status {
+        animation: slideIn 0.8s ease-out;
+      }
+
+      .points-progress {
+        position: relative;
+        overflow: hidden;
+        animation: glow 2s ease-in-out;
+      }
+
+      .progress {
+        background: linear-gradient(to right, #ffd700, #fff3b0, #ffd700);
+        background-size: 200% 100%;
+        animation: progressShine 2s linear infinite;
+      }
+
+      @keyframes glow {
+        0% {
+          box-shadow: 0 0 10px #ffd700;
+        }
+        50% {
+          box-shadow: 0 0 30px #ffd700;
+        }
+        100% {
+          box-shadow: 0 0 10px #ffd700;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Animação do número de pontos */
+      #user-points {
+        display: inline-block;
+        animation: pulseGold 0.8s ease-out 2, scaleUp 0.5s ease-out;
+      }
+
+      @keyframes scaleUp {
+        from {
+          transform: scale(0);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+
+      .btn-sacar {
+        background: linear-gradient(45deg, #ffd700, #c5a642);
+        color: #2c2c2c;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-sacar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        background: linear-gradient(45deg, #c5a642, #ffd700);
+      }
+
+      .btn-sacar:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        background: #cccccc;
+      }
+
+      /* Modal de Saque */
+      .modal-saque {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+        animation: modalEntrance 0.3s ease-out;
+      }
+
+      @keyframes modalEntrance {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
     </style>
   </head>
   <body>
@@ -179,25 +327,117 @@
         <div class="points-container">
           <div class="points-progress">
             <p>
-              Pontos acumulados: <strong id="user-points">0</strong> de 2000
+              Pontos acumulados: <strong id="user-points">0</strong> de 1000
             </p>
             <p>Equivalente a: <strong id="points-reais">R$ 0,00</strong></p>
             <div class="progress-bar">
               <div class="progress" id="progress-bar" style="width: 0%"></div>
             </div>
+            <button id="btnSacar" class="btn-sacar">
+              <i class="fas fa-coins"></i> Sacar R$
+              <span id="valorSaque">0,00</span>
+            </button>
           </div>
         </div>
       </section>
+
+      <div class="modal-saque" id="modalSaque">
+        <div class="modal-content">
+          <h3>Sacar Fundos 💰</h3>
+          <form id="formSaque">
+            <div class="form-group">
+              <label>Valor Disponível:</label>
+              <input
+                type="text"
+                id="valorDisponivel"
+                disabled
+                value="R$ 0,00"
+              />
+            </div>
+            <div class="form-group">
+              <label>Valor do Saque:</label>
+              <input type="number" id="valorSolicitado" step="0.01" required />
+            </div>
+            <div class="form-group">
+              <label>Senha:</label>
+              <input type="password" required />
+            </div>
+            <button type="submit" class="btn-sacar">Confirmar Saque</button>
+          </form>
+          <button onclick="fecharModal()" class="btn-fechar">×</button>
+        </div>
+      </div>
 
       <h1>Pesquisas Disponíveis</h1>
 
       <div id="survey-list" class="survey-list"></div>
       <div id="pagination" class="pagination"></div>
       <section class="available-surveys">
+
         <script>
           const API_URL = "https://opinapay.onrender.com";
+          const realPerPoint = 10 / 25;
 
+          function atualizarValorSaque() {
+            const pontos =
+              parseInt(localStorage.getItem("pontosAcumulados")) || 0;
+            const valor = (pontos * realPerPoint).toFixed(2);
+
+            document.getElementById("valorSaque").textContent = valor;
+            document.getElementById("valorDisponivel").value = `R$ ${valor}`;
+            document.getElementById("btnSacar").disabled = pontos < 1000;
+            document.getElementById("progress-bar").style.width = `${
+              (pontos / 1000) * 100
+            }%`;
+            document.getElementById("user-points").textContent = pontos;
+            document.getElementById("points-reais").textContent = `R$ ${valor}`;
+          }
+
+          // Verificar se o usuário está autenticado
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    alert("Você precisa estar logado para acessar esta página!");
+    window.location.href = "cadastro.html";
+    return;
+  }
+
+  // Adicione esta linha para debug
+  console.log("Token encontrado:", token);
+  
+  // Restante do seu código...
+  atualizarValorSaque();
+  // ...
+});
           document.addEventListener("DOMContentLoaded", async () => {
+            atualizarValorSaque();
+
+            document
+              .getElementById("btnSacar")
+              .addEventListener("click", () => {
+                document.getElementById("modalSaque").style.display = "flex";
+              });
+
+            document
+              .getElementById("formSaque")
+              .addEventListener("submit", (e) => {
+                e.preventDefault();
+                document.getElementById("modalSaque").innerHTML = `
+            <div class="modal-content" style="text-align:center">
+              <div class="loader"></div>
+              <p>Processando seu saque...</p>
+            </div>
+          `;
+
+                setTimeout(() => {
+                  document.getElementById("modalSaque").style.display = "none";
+                  alert("Saque solicitado! O valor chegará em 3 dias úteis.");
+                  localStorage.setItem("pontosAcumulados", 0);
+                  atualizarValorSaque();
+                }, 2000);
+              });
+
             const perPage = 10;
             const params = new URLSearchParams(location.search);
             const page = parseInt(params.get("page") || "1", 10);
@@ -209,26 +449,10 @@
             const end = start + perPage;
             const subset = pesquisas.slice(start, end);
 
-            const listEl = document.getElementById("survey-list");
-
-            const userPoints = 0; // Atualize esse valor com os pontos reais do usuário
-            const realPerPoint = 10 / 25; // 25 pontos = R$1.00 → Cada ponto = R$0.04
-            const reaisGanhos = (userPoints * realPerPoint).toFixed(2);
-            document.getElementById("user-points").innerText = userPoints;
-            document.getElementById(
-              "points-reais"
-            ).innerText = `R$ ${reaisGanhos}`;
-
-            document.getElementById("progress-bar").style.width = `${
-              (userPoints / 2000) * 100
-            }%`;
-
-            listEl.innerHTML = subset
+            document.getElementById("survey-list").innerHTML = subset
               .map((p) => {
                 const pontos = p.id * 25;
                 const valorReais = (pontos * realPerPoint).toFixed(2);
-
-                // define links estáticos para os 5 primeiros
                 const staticLinks = {
                   1: "filmes.html",
                   2: "social.html",
@@ -237,38 +461,33 @@
                   5: "sustentabilidade.html",
                 };
 
-                const isStatic = p.id >= 1 && p.id <= 5;
-                const urlStatic = staticLinks[p.id];
-
                 return `
-      <article class="survey-card" data-id="${p.id}">
-        <div class="survey-info">
-          <h3>${p.titulo}</h3>
-          <ul class="survey-details">
-            <li><img src="./img/coin.png" width="50"/> ${pontos} pontos = 💰 R$ ${valorReais}</li>
-            <li>⏱ ${
-              Array.isArray(p.perguntas)
-                ? p.perguntas.length * 2 + " minutos"
-                : "Duração indefinida"
-            }</li>
-
-          </ul>
-        </div>
-        ${
-          isStatic
-            ? // para 1–5, link direto ao HTML estático
-              `<a href="${urlStatic}" class="btn-primary">Responder</a>`
-            : // para os demais, mantemos o botão que usa sua lógica de redirecionar ao formulário dinâmico
-              `<button class="btn-primary btn-responder">Responder</button>`
-        }
-      </article>
-    `;
+            <article class="survey-card" data-id="${p.id}">
+              <div class="survey-info">
+                <h3>${p.titulo}</h3>
+                <ul class="survey-details">
+                  <li><img src="./img/coin.png" width="50"/> ${pontos} pontos = 💰 R$ ${valorReais}</li>
+                  <li>⏱ ${
+                    Array.isArray(p.perguntas)
+                      ? p.perguntas.length * 2 + " minutos"
+                      : "Duração indefinida"
+                  }</li>
+                </ul>
+              </div>
+              ${
+                p.id <= 5
+                  ? `<a href="${
+                      staticLinks[p.id]
+                    }" class="btn-primary">Responder</a>`
+                  : `<button class="btn-primary btn-responder">Responder</button>`
+              }
+            </article>
+          `;
               })
               .join("");
 
             const totalPages = Math.ceil(pesquisas.length / perPage);
-            const pagEl = document.getElementById("pagination");
-            pagEl.innerHTML = [
+            document.getElementById("pagination").innerHTML = [
               page > 1 ? `<a href="?page=${page - 1}">← Anterior</a>` : "",
               `Página ${page} de ${totalPages}`,
               page < totalPages
@@ -276,7 +495,6 @@
                 : "",
             ].join(" | ");
 
-            // redireciona quem clicou em btn-responder
             document.querySelectorAll(".btn-responder").forEach((btn) => {
               btn.addEventListener("click", () => {
                 const id = btn.closest(".survey-card").dataset.id;
@@ -284,6 +502,57 @@
               });
             });
           });
+
+          const urlParams = new URLSearchParams(window.location.search);
+          if (urlParams.has("fromSuccess")) {
+            const pontos =
+              parseInt(localStorage.getItem("pontosAcumulados")) || 0;
+            const valor = (pontos * realPerPoint).toFixed(2);
+            alert(`Parabéns! Você ganhou ${pontos} pontos (R$ ${valor})!`);
+            atualizarValorSaque();
+          }
+
+          function fecharModal() {
+            document.getElementById("modalSaque").style.display = "none";
+          }
+
+          document.getElementById("btnSacar").addEventListener("click", () => {
+            document.getElementById("modalSaque").style.display = "flex";
+            atualizarValorSaque();
+          });
+
+          document
+            .getElementById("formSaque")
+            .addEventListener("submit", function (e) {
+              e.preventDefault();
+
+              const modalContent = `
+        <div class="modal-content" style="text-align:center">
+            <div class="loader"></div>
+            <p>Processando seu saque...</p>
+        </div>
+    `;
+              document.getElementById("modalSaque").innerHTML = modalContent;
+
+              setTimeout(() => {
+                fecharModal();
+                alert(
+                  "Saque solicitado com sucesso!\nValor chegará em 3 dias úteis."
+                );
+                localStorage.setItem("pontosAcumulados", 0);
+                atualizarValorSaque();
+
+                document.getElementById("modalSaque").innerHTML = `
+            <div class="modal-content">
+                <h3>Sacar Fundos 💰</h3>
+                <form id="formSaque">
+                    <!-- ... (mantenha os campos do formulário) ... -->
+                </form>
+                <button onclick="fecharModal()" class="btn-fechar">×</button>
+            </div>
+        `;
+              }, 2000);
+            });
         </script>
       </section>
     </main>
@@ -345,4 +614,30 @@
       });
     </script>
   </body>
+
+  <audio
+    id="coinSound"
+    src="https://www.zapsplat.com/wp-content/uploads/2020/sound-effects-62045/zapsplat_multimedia_game_sound_coins_collect_002_62463.mp3"
+  ></audio>
+
+  <script>
+    function playCoinSound() {
+      const sound = document.getElementById("coinSound");
+      if (!sound) return;
+      sound.volume = 0.3;
+      sound.currentTime = 0;
+
+      if (typeof sound.loop === "boolean") {
+        sound.loop = false;
+      }
+
+      const playPromise = sound.play();
+
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.log("Reprodução automática bloqueada");
+        });
+      }
+    }
+  </script>
 </html>

@@ -46,20 +46,24 @@
     <h1>Obrigado pela participação!</h1>
     <p id="msg-pontos"></p>
     <p id="msg-reais"></p>
-    <a href="index.html" class="btn-home">Voltar ao início</a>
+    <a href="pesquisas.html?fromSuccess=true" class="btn-home">Voltar ao início</a>
   </div>
 
   <script>
-    // Lê pontos e reais da querystring
-    const qs = new URLSearchParams(window.location.search);
-    const pontos = qs.get('pontos') || '0';
-    const reais = qs.get('reais') || '0.00';
+   const qs = new URLSearchParams(window.location.search);
+const pontosGanhos = parseInt(qs.get('pontos')) || 0;
+const reais = qs.get('reais') || '0.00';
 
-    // Preenche as mensagens
-    document.getElementById('msg-pontos').innerText =
-      `Você ganhou ${pontos} pontos nesta pesquisa.`;
-    document.getElementById('msg-reais').innerText =
-      `Isso equivale a R$ ${reais}.`;
+// Atualizar pontos no localStorage
+let pontosAcumulados = parseInt(localStorage.getItem('pontosAcumulados')) || 0;
+pontosAcumulados += pontosGanhos;
+localStorage.setItem('pontosAcumulados', pontosAcumulados);
+
+// Preencher mensagens
+document.getElementById('msg-pontos').innerText = 
+  `Você ganhou ${pontosGanhos} pontos nesta pesquisa.`;
+document.getElementById('msg-reais').innerText = 
+  `Isso equivale a R$ ${reais}.`;
   </script>
 </body>
 </html>
