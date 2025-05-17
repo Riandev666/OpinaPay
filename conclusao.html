@@ -1,3 +1,4 @@
+<!-- conclusao.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -5,65 +6,68 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Parabéns!</title>
   <style>
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
-      margin: 0;
-    }
-    .card {
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      text-align: center;
-      max-width: 320px;
-    }
-    .card h1 {
-      margin-bottom: 1rem;
-      color: #00c853;
-    }
-    .card p {
-      margin: 0.5rem 0;
-      font-size: 1.1rem;
-    }
-    .btn-home {
-      display: inline-block;
-      margin-top: 1.5rem;
-      padding: 0.6rem 1.2rem;
-      background: #00c853;
-      color: white;
-      text-decoration: none;
-      border-radius: 4px;
-    }
+    body { display:flex; align-items:center; justify-content:center; height:100vh; font-family:Arial,sans-serif; background:#f0f0f0; margin:0; }
+    .card { background:white; padding:2rem; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); text-align:center; max-width:320px; }
+    .card h1 { margin-bottom:1rem; color:#00c853; }
+    .card p { margin:0.5rem 0; font-size:1.1rem; }
+    .btn-home { display:inline-block; margin-top:1.5rem; padding:0.6rem 1.2rem; background:#00c853; color:white; text-decoration:none; border-radius:4px; }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Obrigado pela participação!</h1>
-    <p id="msg-pontos"></p>
+    <p id="msg-pontos">Carregando seus pontos…</p>
     <p id="msg-reais"></p>
-    <a href="pesquisas.html?fromSuccess=true" class="btn-home">Voltar ao início</a>
+    <!-- o link será atualizado dinamicamente após o POST -->
+    <a id="btn-voltar" href="#" class="btn-home">Voltar ao início</a>
   </div>
 
   <script>
-   const qs = new URLSearchParams(window.location.search);
-const pontosGanhos = parseInt(qs.get('pontos')) || 0;
-const reais = qs.get('reais') || '0.00';
+    (async () => {
+      const API_URL = "https://opinapay.onrender.com";
+      const token   = localStorage.getItem("token");
+      const qs      = new URLSearchParams(window.location.search);
+      const pontosGanhos = parseInt(qs.get("pontos"), 10) || 0;
+      const reais        = qs.get("reais") || "0.00";
 
-// Atualizar pontos no localStorage
-let pontosAcumulados = parseInt(localStorage.getItem('pontosAcumulados')) || 0;
-pontosAcumulados += pontosGanhos;
-localStorage.setItem('pontosAcumulados', pontosAcumulados);
+      try {
+        // 1) Envia ao backend
+        const res = await fetch(`${API_URL}/user/points`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ pointsToAdd: pontosGanhos })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-// Preencher mensagens
-document.getElementById('msg-pontos').innerText = 
-  `Você ganhou ${pontosGanhos} pontos nesta pesquisa.`;
-document.getElementById('msg-reais').innerText = 
-  `Isso equivale a R$ ${reais}.`;
+        const { points: pontosAtualizados } = await res.json();
+
+        // 2) Atualiza localStorage
+        localStorage.setItem("pontosAcumulados", pontosAtualizados);
+
+        // 3) Exibe as mensagens corretas
+        document.getElementById("msg-pontos").innerText =
+          `Você ganhou ${pontosGanhos} pontos nesta pesquisa.`;
+        document.getElementById("msg-reais").innerText =
+          `Isso equivale a R$ ${reais}.`;
+
+        // 4) Atualiza o botão de volta com fromSuccess
+        document
+          .getElementById("btn-voltar")
+          .setAttribute("href", "pesquisas.html?fromSuccess=true");
+
+      } catch (err) {
+        console.error("Erro ao creditar pontos:", err);
+        document.getElementById("msg-pontos").innerText =
+          "Ops! Não foi possível creditar seus pontos.";
+        document.getElementById("btn-voltar").innerText = "Tentar novamente";
+        document
+          .getElementById("btn-voltar")
+          .setAttribute("href", document.location.href);
+      }
+    })();
   </script>
 </body>
 </html>
