@@ -377,174 +377,125 @@
 const API_URL = "https://opinapay.onrender.com";
 const realPerPoint = 10 / 25; // 25 pontos = R$ 10,00
 
-// Obter headers com token
+// DEBUG: Verificar token ao carregar
+console.log("[DEBUG] Token no localStorage:", localStorage.getItem("token"));
+
+// Obter headers com tratamento de erro
 function getHeaders() {
   const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("Erro: Token JWT não encontrado");
+    throw new Error("Autenticação necessária");
+  }
   return {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${token}`
   };
 }
 
-// Função para verificar autenticação
-async function checkAuth() {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("Você precisa estar logado para acessar esta página!");
-    window.location.href = "cadastro.html";
-    return false;
-  }
-  return true;
-}
-
-// Busca pontos do back-end
+// Busca pontos com tratamento robusto
 async function fetchUserPoints() {
   try {
-    const res = await fetch(`${API_URL}/user/points`, {
+    console.log("[DEBUG] Iniciando busca por pontos...");
+    
+    const response = await fetch(`${API_URL}/user/points`, {
       headers: getHeaders()
     });
     
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+    console.log("[DEBUG] Resposta recebida, status:", response.status);
+    
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error("[DEBUG] Erro na resposta:", errorData);
+      throw new Error(`Erro HTTP ${response.status}`);
     }
     
-    const data = await res.json();
+    const data = await response.json();
+    console.log("[DEBUG] Pontos recebidos:", data.points);
+    
     return data.points || 0;
   } catch (error) {
-    console.error("Erro ao buscar pontos:", error);
+    console.error("[DEBUG] Erro ao buscar pontos:", error);
+    
+    // Mostrar feedback ao usuário
+    if (error.message.includes("Autenticação necessária")) {
+      alert("Sua sessão expirou. Por favor, faça login novamente.");
+      window.location.href = "entrar.html";
+    }
+    
     return 0;
   }
 }
 
-// Adiciona pontos no back-end
-async function addUserPoints(points) {
-  const res = await fetch(`${API_URL}/user/points`, {
-    method: "POST",
-    headers: getHeaders(),
-    body: JSON.stringify({ pointsToAdd: points })
-  });
-  const json = await res.json();
-  return json.points;
-}
-
-// Atualiza a UI com os pontos do usuário
+// Atualiza UI com tratamento visual
 async function atualizarPontosUI() {
-  const pontos = await fetchUserPoints();
-  const valor = (pontos * realPerPoint).toFixed(2);
-
-  document.getElementById("user-points").textContent = pontos;
-  document.getElementById("points-reais").textContent = `R$ ${valor}`;
-  document.getElementById("valorSaque").textContent = valor;
-  document.getElementById("valorDisponivel").value = `R$ ${valor}`;
-  document.getElementById("progress-bar").style.width = `${(pontos/1000)*100}%`;
-  document.getElementById("btnSacar").disabled = pontos < 1000;
-}
-
-// Monta a lista de pesquisas
-async function montarListaDePesquisas() {
-  const perPage = 10;
-  const params = new URLSearchParams(location.search);
-  const page = parseInt(params.get("page") || "1", 10);
-
-  const res = await fetch(`${API_URL}/api/pesquisas`);
-  const pesquisas = await res.json();
-
-  const start = (page - 1) * perPage;
-  const subset = pesquisas.slice(start, start + perPage);
-
-  document.getElementById("survey-list").innerHTML = subset
-    .map(p => {
-      const pontos = p.id * 25;
-      const valorReais = (pontos * realPerPoint).toFixed(2);
-      const links = {
-        1: "filmes.html",
-        2: "social.html",
-        3: "musicas.html",
-        4: "sono.html",
-        5: "sustentabilidade.html",
-      };
-      return `
-        <article class="survey-card" data-id="${p.id}">
-          <div class="survey-info">
-            <h3>${p.titulo}</h3>
-            <ul class="survey-details">
-              <li><img src="./img/coin.png" width="50"/> ${pontos} pontos = 💰 R$ ${valorReais}</li>
-              <li>⏱ ${Array.isArray(p.perguntas)? p.perguntas.length*2+' minutos':'Duração indefinida'}</li>
-            </ul>
-          </div>
-          ${
-            p.id <= 5
-              ? `<a href="${links[p.id]}" class="btn-primary">Responder</a>`
-              : `<button class="btn-primary btn-responder">Responder</button>`
-          }
-        </article>
-      `;
-    }).join("");
-
-  // Paginação
-  const totalPages = Math.ceil(pesquisas.length / perPage);
-  document.getElementById("pagination").innerHTML = [
-    page > 1 ? `<a href="?page=${page-1}">← Anterior</a>` : "",
-    `Página ${page} de ${totalPages}`,
-    page < totalPages ? `<a href="?page=${page+1}">Próximo →</a>` : ""
-  ].join(" | ");
-
-  // Eventos de responder
-  document.querySelectorAll(".btn-responder").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const id = btn.closest(".survey-card").dataset.id;
-      location.href = `formulario-pesquisas.html?pesquisa=${id}`;
-    });
-  });
-}
-
-// Configura modal de saque
-function configurarSaque() {
-  document.getElementById("btnSacar").addEventListener("click", () => {
-    document.getElementById("modalSaque").style.display = "flex";
-  });
-  
-  document.getElementById("formSaque").addEventListener("submit", async e => {
-    e.preventDefault();
-    document.getElementById("modalSaque").innerHTML = `
-      <div class="modal-content" style="text-align:center">
-        <div class="loader"></div>
-        <p>Processando seu saque...</p>
-      </div>`;
-    
-    await new Promise(r => setTimeout(r, 2000));
-    fecharModal();
-    alert("Saque solicitado! O valor chegará em 3 dias úteis.");
-    await atualizarPontosUI();
-  });
-}
-
-function fecharModal() {
-  document.getElementById("modalSaque").style.display = "none";
-}
-
-// Inicialização
-document.addEventListener("DOMContentLoaded", async () => {
-  // 1) Verificar autenticação
-  const isAuthenticated = await checkAuth();
-  if (!isAuthenticated) return;
-
-  // 2) Carregar pontos e pesquisas
   try {
-    await atualizarPontosUI();
-    await montarListaDePesquisas();
-    configurarSaque();
+    // Mostrar loading
+    document.getElementById("user-points").textContent = "Carregando...";
+    document.getElementById("progress-bar").style.width = "0%";
+    
+    const pontos = await fetchUserPoints();
+    const valor = (pontos * realPerPoint).toFixed(2);
 
-    // 3) Verificar se veio de uma pesquisa concluída
+    // Atualizar UI com animação
+    document.getElementById("user-points").textContent = pontos;
+    document.getElementById("points-reais").textContent = `R$ ${valor}`;
+    document.getElementById("valorSaque").textContent = valor;
+    document.getElementById("valorDisponivel").value = `R$ ${valor}`;
+    
+    // Animar a barra de progresso
+    const progressBar = document.getElementById("progress-bar");
+    progressBar.style.transition = "width 1s ease-out";
+    progressBar.style.width = `${(pontos/1000)*100}%`;
+    
+    document.getElementById("btnSacar").disabled = pontos < 1000;
+    
+  } catch (error) {
+    console.error("Erro ao atualizar UI:", error);
+    document.getElementById("points-reais").textContent = "Erro ao cargar";
+  }
+}
+
+// Inicialização com tratamento completo
+async function initApp() {
+  try {
+    console.log("[DEBUG] Iniciando aplicação...");
+    
+    // Verificar autenticação
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Por favor, faça login para acessar esta página");
+      window.location.href = "entrar.html";
+      return;
+    }
+    
+    // Carregar dados
+    await Promise.all([
+      atualizarPontosUI(),
+      montarListaDePesquisas()
+    ]);
+    
+    configurarSaque();
+    
+    // Verificar se veio de redirecionamento após pesquisa
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("fromSuccess")) {
-      alert("🎉 Parabéns! Seus pontos foram creditados com sucesso!");
+      alert("🎉 Pontos adicionados com sucesso!");
       await atualizarPontosUI();
+      // Remover o parâmetro da URL
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
+    
+    console.log("[DEBUG] Aplicação carregada com sucesso");
+    
   } catch (error) {
-    console.error("Erro na inicialização:", error);
+    console.error("[DEBUG] Erro na inicialização:", error);
+    alert("Ocorreu um erro ao carregar a página. Por favor, recarregue.");
   }
-});
+}
+
+// Iniciar a aplicação
+document.addEventListener("DOMContentLoaded", initApp);
 </script>
 
       </section>
