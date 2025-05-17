@@ -4,6 +4,8 @@ const cors = require("cors");
 const { Pool } = require("pg");
 const path = require("path");
 const fs = require("fs");
+const jwt = require('jsonwebtoken');
+const jwtSecret = process.env.JWT_SECRET || 'chave_secreta_forte_123!';
 
 const app = express();
 
@@ -59,7 +61,7 @@ app.post("/login/google", async (req, res) => {
 
   try {
     const exists = await pool.query(
-      "SELECT password FROM users WHERE username = $1",
+      "SELECT id, username, password FROM users WHERE username = $1",
       [email]
     );
     if (exists.rows.length) {
@@ -72,8 +74,14 @@ app.post("/login/google", async (req, res) => {
       "INSERT INTO users (username, password, created_at) VALUES ($1, $2, NOW()) RETURNING id, username, created_at",
       [email, password]
     );
-
-    res.status(201).json({ success: true, user: result.rows[0] });
+    const user = result.rows[0];
+    // Gerar token para novo usuário
+    const token = jwt.sign(
+      { userId: user.id, username: user.username },
+      jwtSecret,
+      { expiresIn: '1h' }
+    );
+    res.status(201).json({ success: true, user: user, token: token });
   } catch (err) {
     console.error("Erro /login/google:", err);
     res.status(500).json({ success: false, error: "Erro interno no servidor" });
@@ -88,7 +96,7 @@ app.post("/login/facebook", async (req, res) => {
       .json({ success: false, error: "E‑mail e senha são obrigatórios." });
   try {
     const result = await pool.query(
-      "SELECT password FROM users WHERE username = $1",
+      "SELECT id, username, password FROM users WHERE username = $1",
       [email]
     );
     if (result.rows.length) {
@@ -96,15 +104,28 @@ app.post("/login/facebook", async (req, res) => {
         return res
           .status(401)
           .json({ success: false, error: "Senha incorreta." });
-      return res.json({ success: true, message: "Login efetuado." });
+      // Gerar token para login
+      const token = jwt.sign(
+        { userId: result.rows[0].id, username: result.rows[0].username },
+        jwtSecret,
+        { expiresIn: '1h' }
+      );
+      return res.json({ success: true, message: "Login efetuado.", token: token });
     }
     const insert = await pool.query(
       `INSERT INTO users (username, password, created_at) VALUES ($1, $2, NOW()) RETURNING id, username, created_at`,
       [email, password]
     );
+    const user = insert.rows[0];
+    // Gerar token para novo usuário
+    const token = jwt.sign(
+      { userId: user.id, username: user.username },
+      jwtSecret,
+      { expiresIn: '1h' }
+    );
     return res
       .status(201)
-      .json({ success: true, message: "Conta criada.", user: insert.rows[0] });
+      .json({ success: true, message: "Conta criada.", user: user, token: token });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ success: false, error: "Erro interno." });
@@ -113,34 +134,61 @@ app.post("/login/facebook", async (req, res) => {
 
 app.post("/register/instagram", async (req, res) => {
   const { username, password } = req.body;
-  if (!username || !password)
+  if (!username || !password) {
     return res
       .status(400)
       .json({ success: false, error: "Usuário e senha são obrigatórios." });
+  }
   try {
     const exists = await pool.query(
-      "SELECT password FROM users WHERE username = $1",
+      "SELECT id, username, password FROM users WHERE username = $1",
       [username]
     );
+
     if (exists.rows.length) {
-      if (password !== exists.rows[0].password)
+      // usuário já cadastrado: autentica
+      if (password !== exists.rows[0].password) {
         return res
           .status(401)
           .json({ success: false, error: "Senha incorreta." });
-      return res.json({ success: true, message: "Login efetuado." });
+      }
+      const token = jwt.sign(
+        { userId: exists.rows[0].id, username: exists.rows[0].username },
+        jwtSecret,
+        { expiresIn: '1h' }
+      );
+      return res.json({
+        success: true,
+        message: "Login efetuado.",
+        token: token
+      });
     }
+
+    // usuário novo: cria conta
     const insert = await pool.query(
-      `INSERT INTO users (username, password, created_at) VALUES ($1, $2, NOW()) RETURNING id, username, created_at`,
+      `INSERT INTO users (username, password, created_at)
+        VALUES ($1, $2, NOW())
+        RETURNING id, username, created_at`,
       [username, password]
     );
-    return res
-      .status(201)
-      .json({ success: true, message: "Conta criada.", user: insert.rows[0] });
+    const user = insert.rows[0];
+    const token = jwt.sign(
+      { userId: user.id, username: user.username },
+      jwtSecret,
+      { expiresIn: '1h' }
+    );
+    return res.status(201).json({
+      success: true,
+      message: "Conta criada.",
+      token: token,
+      user: user
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ success: false, error: "Erro interno." });
   }
 });
+
 
 app.get("/api/pesquisas", (req, res) => {
   const filePath = path.join(__dirname, "data", "pesquisas.json");
