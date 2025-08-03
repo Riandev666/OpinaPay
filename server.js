@@ -43,11 +43,10 @@ app.use(express.static(path.join(__dirname)));
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false }  // ou ssl: true
 });
 
-pool
-  .connect()
+pool.query('SELECT NOW()')
   .then(() => console.log("DB conectado com sucesso"))
   .catch((err) => console.error("Erro DB:", err));
 
