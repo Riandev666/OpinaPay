@@ -144,69 +144,55 @@ app.post("/login/facebook", async (req, res) => {
 });
 
 app.post("/register/instagram", async (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ success: false, error: "Usuário e senha são obrigatórios." });
-  }
   try {
-    const exists = await pool.query(
-      "SELECT id, username, password FROM users WHERE username = $1",
-      [username]
-    );
+    const { username, email, password } = req.body;
 
-    if (exists.rows.length) {
-      // login de usuário existente
-      if (password !== exists.rows[0].password) {
-        return res
-          .status(401)
-          .json({ success: false, error: "Senha incorreta." });
-      }
-      const token = jwt.sign(
-        { userId: exists.rows[0].id, username: exists.rows[0].username },
-        jwtSecret,
-        { expiresIn: '1h' }
-      );
-      return res.json({
-        success: true,
-        message: "Login efetuado.",
-        token
+    // 1️⃣ Validação de campos obrigatórios
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: "Todos os campos são obrigatórios."
       });
     }
 
-    // criação de novo usuário
-    const insert = await pool.query(
-      `INSERT INTO users (username, password, created_at)
-         VALUES ($1, $2, NOW())
-       RETURNING id, username, created_at`,
-      [username, password]
-    );
-    const user = insert.rows[0];
-
-    // insere pontuação inicial na tabela user_points
-    await pool.query(
-      "INSERT INTO user_points (user_id) VALUES ($1)",
-      [user.id]
+    // 2️⃣ Verificar se já existe usuário com mesmo email ou username
+    const existing = await pool.query(
+      "SELECT id FROM users WHERE email = $1 OR username = $2",
+      [email, username]
     );
 
-    // gera token
-    const token = jwt.sign(
-      { userId: user.id, username: user.username },
-      jwtSecret,
-      { expiresIn: '1h' }
+    if (existing.rows.length > 0) {
+      return res.status(409).json({
+        success: false,
+        error: "Usuário já cadastrado."
+      });
+    }
+
+
+    // 3️⃣ Inserir no banco
+    const result = await pool.query(
+      "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username",
+      [username, email, password]
     );
-    return res.status(201).json({
+
+    const newUser = result.rows[0];
+
+    // 4️⃣ Retornar sucesso
+    res.status(201).json({
       success: true,
-      message: "Conta criada.",
-      token,
-      user
+      message: "Usuário registrado com sucesso.",
+      user: newUser
     });
+
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ success: false, error: "Erro interno." });
+    console.error("Erro no /register/instagram:", err);
+    res.status(500).json({
+      success: false,
+      error: "Erro interno no servidor."
+    });
   }
 });
+
 
 // GET /user/points — busca pontos do usuário logado
 app.get("/user/points", authenticateToken, async (req, res) => {
