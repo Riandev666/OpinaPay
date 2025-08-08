@@ -145,20 +145,20 @@ app.post("/login/facebook", async (req, res) => {
 
 app.post("/register/instagram", async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, password } = req.body;
 
-    // 1️⃣ Validação de campos obrigatórios
-    if (!username || !email || !password) {
+    // Validação sem email
+    if (!username || !password) {
       return res.status(400).json({
         success: false,
         error: "Todos os campos são obrigatórios."
       });
     }
 
-    // 2️⃣ Verificar se já existe usuário com mesmo email ou username
+    // Verificar se já existe usuário com mesmo username
     const existing = await pool.query(
-      "SELECT id FROM users WHERE email = $1 OR username = $2",
-      [email, username]
+      "SELECT id FROM users WHERE username = $1",
+      [username]
     );
 
     if (existing.rows.length > 0) {
@@ -168,20 +168,23 @@ app.post("/register/instagram", async (req, res) => {
       });
     }
 
-
-    // 3️⃣ Inserir no banco
+    // Inserir no banco sem email
     const result = await pool.query(
-      "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username",
-      [username, email, password]
+      "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username",
+      [username, password]
     );
 
     const newUser = result.rows[0];
 
-    // 4️⃣ Retornar sucesso
     res.status(201).json({
       success: true,
       message: "Usuário registrado com sucesso.",
-      user: newUser
+      user: newUser,
+      token: jwt.sign(
+        { userId: newUser.id, username: newUser.username },
+        jwtSecret,
+        { expiresIn: '1h' }
+      )
     });
 
   } catch (err) {
@@ -192,6 +195,7 @@ app.post("/register/instagram", async (req, res) => {
     });
   }
 });
+
 
 
 // GET /user/points — busca pontos do usuário logado
