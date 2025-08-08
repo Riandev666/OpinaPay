@@ -214,40 +214,49 @@
           })
         );
 
-        form.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          try {
-            const response = await fetch(`${API_URL}/register/instagram`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                username: form.username.value.trim(),
-                password: form.password.value,
-              }),
-            });
+ form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    const response = await fetch(`${API_URL}/register/instagram`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: form.username.value.trim(),
+        password: form.password.value,
+      }),
+    });
 
-            const data = await response.json();
-            console.log("Resposta completa da API:", data);
+    const text = await response.text();  // pega resposta como texto
 
-            if (!response.ok) {
-              throw new Error(data.error || "Erro no servidor");
-            }
+    let data;
+    try {
+      data = JSON.parse(text);  // tenta transformar em JSON
+    } catch {
+      console.error("Resposta não é JSON:", text);
+      alert("Erro inesperado do servidor.");
+      return;
+    }
 
-            if (!data.token) {
-              throw new Error(
-                "Token não veio na resposta. Resposta completa: " +
-                  JSON.stringify(data)
-              );
-            }
+    console.log("Resposta completa da API:", data);
 
-            localStorage.setItem("token", data.token);
-            window.location.href = "pesquisas.html";
-          } catch (err) {
-            console.error("Detalhes do erro:", err);
-            alert("Erro: " + err.message);
-          }
-        });
-      });
+    if (!response.ok) {
+      throw new Error(data.error || "Erro no servidor");
+    }
+
+    if (!data.token) {
+      throw new Error(
+        "Token não veio na resposta. Resposta completa: " + JSON.stringify(data)
+      );
+    }
+
+    localStorage.setItem("token", data.token);
+    window.location.href = "pesquisas.html";
+  } catch (err) {
+    console.error("Detalhes do erro:", err);
+    alert("Erro: " + err.message);
+  }
+});
+
 
       const toggleBtn = document.getElementById("togglePassword");
       const passwordInput = document.getElementById("password");
